@@ -66,7 +66,7 @@ class Status extends ServiceAPI
         $begin_time = $this->makeTimestampParam($beginTime);
         $end_time = $this->makeTimestampParam($endTime);
         $params = compact('type', 'max', 'begin_time', 'end_time', 'nationcode', 'mobile') + $this->prepareForGeneral($random);
-        return $this->request('pullstatus4mobile',$random, $params);
+        return $this->request('pullstatus4mobile', $random, $params);
     }
 
     /**

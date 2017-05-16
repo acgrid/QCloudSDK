@@ -58,7 +58,7 @@ class SMS extends API
     public function useTemplate(int $id, array $params)
     {
         $this->template = $id;
-        $this->templateVariables = array_values($params);
+        $this->templateVariables = array_map('strval', $params);
         unset($this->literalType);
         unset($this->literalMessage);
         return $this;
@@ -123,7 +123,7 @@ class SMS extends API
 
     protected function send($endpoint, $normalizedNumber)
     {
-        $params = ['tel' => $normalizedNumber] + $this->prepareContent() + $this->prepareForMobile($normalizedNumber, $random);
+        $params = ['tel' => $normalizedNumber] + $this->prepareContent() + $this->prepareForMobile([$normalizedNumber], $random);
         return $this->request($endpoint, $random, $params);
     }
 
