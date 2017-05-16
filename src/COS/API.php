@@ -10,6 +10,7 @@ use QCloudSDK\Utils\Nonce;
 
 class API extends AbstractAPI
 {
+    const CONFIG_SECTION = 'cos';
 
     protected $apiUrl;
 

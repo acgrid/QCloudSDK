@@ -12,6 +12,8 @@ use QCloudSDK\Utils\Collection;
 
 class API extends AbstractAPI
 {
+    const CONFIG_SECTION = 'wss';
+
     use ActionTrait;
     use GeneralSignatureTrait;
 

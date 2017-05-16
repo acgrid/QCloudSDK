@@ -14,6 +14,7 @@ use QCloudSDK\Facade\Config;
 
 class API extends AbstractAPI
 {
+    const CONFIG_SECTION = 'cdn';
 
     const QUERY_PROJECT = 'projects';
     const QUERY_HOST = 'hosts';

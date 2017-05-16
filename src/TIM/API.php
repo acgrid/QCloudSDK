@@ -11,6 +11,8 @@ use QCloudSDK\Utils\Nonce;
 
 abstract class API extends AbstractAPI
 {
+    const CONFIG_SECTION = 'tim';
+
     protected $signNeedEndpoint = false;
 
     protected $signNeedMethod = false;
