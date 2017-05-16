@@ -73,6 +73,9 @@ abstract class AbstractAPI
      */
     public function getHttp()
     {
+        if (count($this->http->getMiddlewares()) === 0) {
+            $this->registerHttpMiddlewares();
+        }
         return $this->http;
     }
 
