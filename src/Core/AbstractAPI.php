@@ -109,7 +109,7 @@ abstract class AbstractAPI
 
         $this->checkAndThrow($contents);
 
-        return new Collection($contents);
+        return new Collection(is_scalar($contents) ? ['response' => $contents] : $contents);
     }
 
     /**

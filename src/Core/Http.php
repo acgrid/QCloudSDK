@@ -52,10 +52,6 @@ class Http
      * @var array
      */
     protected $middlewares = [];
-    /**
-     * @var mixed
-     */
-    private $parsedJSON;
 
     /**
      * Guzzle client default settings.
@@ -190,8 +186,6 @@ class Http
      */
     public function getClient()
     {
-        unset($this->parsedJSON); // Invalidate latest parsed JSON data
-
         if (!($this->client instanceof HttpClient)) {
             $this->client = new HttpClient();
         }
@@ -267,9 +261,6 @@ class Http
      */
     public function parseJSON($body)
     {
-        if(isset($this->parsedJSON)) return $this->parsedJSON;
-
-        unset($this->parsedJSON);
 
         if ($body instanceof ResponseInterface) {
             $body = $body->getBody()->__toString();
@@ -281,14 +272,15 @@ class Http
 
         $contents = json_decode($body, true);
         $json_result = json_last_error();
+        $json_result_msg = json_last_error_msg();
 
         Log::debug('API response decoded:', compact('contents'));
 
         if (JSON_ERROR_NONE !== $json_result) {
-            throw new HttpException('Failed to parse JSON: '.json_last_error_msg());
+            throw new HttpException("Failed to parse JSON: $json_result_msg");
         }
 
-        return $this->parsedJSON = $contents;
+        return $contents;
     }
 
     /**

@@ -4,9 +4,11 @@ namespace QCloudSDKTests\Core;
 
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\Exceptions\ClientException;
+use QCloudSDK\Core\Exceptions\HttpException;
 use QCloudSDK\Core\Http;
 use QCloudSDK\Facade\Config;
 use QCloudSDKTests\MockClient;
@@ -117,6 +119,40 @@ class AbstractAPITest extends TestCase
             $this->assertSame('System busy', $e->getMessage());
         }
         $this->assertInstanceOf(RequestInterface::class, $api->getTapped());
+        $this->assertCount(0, $mock);
+    }
+
+    public function testSkipRetry()
+    {
+        $mock = MockClient::mock([
+            new Response(200, [], json_encode([AbstractAPI::RESPONSE_CODE => 1000, AbstractAPI::RESPONSE_MESSAGE => 'System busy'])),
+            new Response(200, [], json_encode([AbstractAPI::RESPONSE_CODE => 9999, AbstractAPI::RESPONSE_MESSAGE => 'Service terminated'])),
+        ]);
+        $http = new Http();
+        $http->setClient(MockClient::makeFromMock($mock));
+        $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
+        $api->setHttp($http);
+        try{
+            $api->request();
+            $this->fail('Should throw ClientException');
+        }catch (ClientException $e){
+            $this->assertSame(9999, $e->getCode());
+            $this->assertSame('Service terminated', $e->getMessage());
+        }
+        $this->assertCount(0, $mock);
+    }
+
+    public function testBreakRetry()
+    {
+        $mock = MockClient::mock(MockClient::repeatResponses(1, 'html'));
+        $http = new Http();
+        $http->setClient(MockClient::makeFromMock($mock));
+        $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
+        $api->setHttp($http);
+        try{
+            $api->request();
+            $this->fail('Should throw ClientException');
+        }catch (HttpException $e){ }
         $this->assertCount(0, $mock);
     }
 
