@@ -271,14 +271,12 @@ class Http
         if (empty($body)) throw new HttpException('Empty response but JSON expected.');
 
         $contents = json_decode($body, true);
-        $json_result = json_last_error();
-        $json_result_msg = json_last_error_msg();
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new HttpException("Failed to parse JSON: " . json_last_error_msg());
+        }
 
         Log::debug('API response decoded:', compact('contents'));
-
-        if (JSON_ERROR_NONE !== $json_result) {
-            throw new HttpException("Failed to parse JSON: $json_result_msg");
-        }
 
         return $contents;
     }
