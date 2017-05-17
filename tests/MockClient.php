@@ -21,7 +21,7 @@ class MockClient
      */
     public static function make($body = null, $status = 200, array $headers = ['X-Foo' => 'Bar'], string $protocol = '1.1')
     {
-        return static::makeFromMock(static::mock(static::repeatResponses(1, $status, $headers, $body, $protocol)));
+        return static::makeFromMock(static::mock(static::repeatResponses(1, $body, $status, $headers, $protocol)));
     }
 
     /**

@@ -58,7 +58,10 @@ namespace QCloudSDKTests\Core {
             $this->assertEquals(['foo' => 'bar'], $http->parseJSON($http->request('http://example.org', 'GET')));
 
             $http->setClient(MockClient::make(''));
-            $this->assertNull($http->parseJSON($http->request('http://example.org', 'GET')));
+            try{
+                $http->parseJSON($http->request('http://example.org', 'GET'));
+                $this->fail('Empty json body check fail.');
+            }catch (HttpException $e) {}
 
             $http->setClient(MockClient::make('null'));
             $this->assertNull($http->parseJSON($http->request('http://example.org', 'GET')));

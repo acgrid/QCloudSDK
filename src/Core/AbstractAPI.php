@@ -121,8 +121,8 @@ abstract class AbstractAPI
      */
     public function parseJSONSigned($method, ...$args)
     {
-        if(isset($args[1])) $args[1] = $this->sign($method, $args[0], $args[1]);
-        return $this->parseJSON($method, $args);
+        if(isset($args[1])) $args[1] = $this->sign(strtoupper($method), $args[0], $args[1]);
+        return $this->parseJSON($method, ...$args);
     }
 
     /**
@@ -132,7 +132,7 @@ abstract class AbstractAPI
      */
     public function requestSigned($method, ...$args)
     {
-        if(isset($args[1])) $args[1] = $this->sign($method, $args[0], $args[1]);
+        if(isset($args[1])) $args[1] = $this->sign(strtoupper($method), $args[0], $args[1]);
         return $this->http->$method(...$args);
     }
 
@@ -191,11 +191,11 @@ abstract class AbstractAPI
     /**
      * Check the array data errors, and Throw exception when the contents contains error.
      *
-     * @param array $contents
+     * @param mixed $contents
      *
      * @throws ClientException
      */
-    protected function checkAndThrow(array $contents)
+    protected function checkAndThrow($contents)
     {
         if (isset($contents[static::RESPONSE_CODE]) && static::SUCCESS_CODE !== $contents[static::RESPONSE_CODE]) {
             if (empty($contents[static::RESPONSE_MESSAGE])) {

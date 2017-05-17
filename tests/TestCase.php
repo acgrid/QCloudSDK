@@ -4,6 +4,7 @@
 namespace QCloudSDKTests;
 
 
+use GuzzleHttp\Psr7\Response;
 use QCloudSDK\Core\Http;
 
 class TestCase extends \PHPUnit_Framework_TestCase
@@ -19,9 +20,23 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $http;
     }
 
+    public function getReflectedHttpWithResponse($body = null, $status = 200, array $headers = ['X-Foo' => 'Bar'], string $protocol = '1.1')
+    {
+        $http = new Http();
+        $http->setClient(new ReflectClient(function() use ($body, $status, $headers, $protocol) {
+            return new Response($status, $headers, $body, $protocol);
+        }));
+        return $http;
+    }
+
     protected function assertRequest(Http $http, \Closure $assertion)
     {
-        call_user_func([$http->getClient(), 'assertRequest'], $assertion);
+        $client = $http->getClient();
+        if(method_exists($client, 'assertRequest')){
+            $client->assertRequest($assertion);
+        }else{
+            throw new \InvalidArgumentException('Not a client has assertion.');
+        }
     }
 
     /**

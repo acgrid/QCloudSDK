@@ -3,6 +3,7 @@
 namespace QCloudSDKTests\Core;
 
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\Exceptions\ClientException;
@@ -61,12 +62,18 @@ class TestAPI extends AbstractAPI
 
     public function request()
     {
-        return $this->parseJSON('GET', 'http://example.org');
+        return $this->parseJSON('get', 'http://example.org');
+    }
+
+    public function advRequest()
+    {
+        return $this->expectResult('data', $this->parseJSONSigned('post', 'www.example.org', $this->createParam('op', 'bar')));
     }
 
     protected function doSign($method, $url, $params)
     {
-        return "signed for " . json_encode(compact('method', 'url', 'params'));
+        $params['sign'] = "signed for $method to $url with param " . json_encode($params);
+        return $params;
     }
 
 }
@@ -115,7 +122,26 @@ class AbstractAPITest extends TestCase
 
     public function testSignature()
     {
+        $api = new TestAPI(new Config());
+        $api->setHttp($http = $this->getReflectedHttpWithResponse('foo'));
+        $response = $api->requestSigned('get', 'www.example.org/', ['op' => 'foo']);
+        $this->assertRequest($http, function(Request $request){
+            $this->assertSame('https://www.example.org/?' . http_build_query(['op' => 'foo', 'sign' => 'signed for GET to www.example.org/ with param {"op":"foo"}'], null, '&', PHP_QUERY_RFC3986), strval($request->getUri()));
+        });
+        $this->assertSame('foo', strval($response->getBody()));
+        $api->setHttp($http = $this->getReflectedHttpWithResponse(json_encode([TestAPI::RESPONSE_CODE => 2])));
+        try{
+            $api->parseJSON('get', 'www.example.org/');
+        }catch (ClientException $exception){
+            $this->assertSame('Unknown', $exception->getMessage());
+        }
 
+        $api->setHttp($http = $this->getReflectedHttpWithResponse(json_encode([TestAPI::RESPONSE_CODE => TestAPI::SUCCESS_CODE, 'data' => ['foo' => 'bar']])));
+        $data = $api->advRequest();
+        $this->assertSame('bar', $data->get('foo'));
+        $this->assertRequest($http, function(Request $request){
+            $this->assertSame(http_build_query(['op' => 'bar', 'sign' => 'signed for POST to www.example.org with param {"op":"bar"}']), $request->getBody()->__toString());
+        });
     }
 
 }

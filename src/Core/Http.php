@@ -277,7 +277,7 @@ class Http
 
         Log::debug('API response raw:', compact('body'));
 
-        if (empty($body)) return null;
+        if (empty($body)) throw new HttpException('Empty response but JSON expected.');
 
         $contents = json_decode($body, true);
         $json_result = json_last_error();
