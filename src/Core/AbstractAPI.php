@@ -172,7 +172,7 @@ abstract class AbstractAPI
             ResponseInterface $response = null
         ) {
             // Limit the number of retries to n
-            if ($retries <= $this->maxRetries && isset($response)) {
+            if (++$retries <= $this->maxRetries && isset($response)) {
                 try{
                     $json = $this->http->parseJSON($response);
                     if(isset($json[static::RESPONSE_CODE]) && isset($this->retryCodes[$json[static::RESPONSE_CODE]])){

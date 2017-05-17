@@ -12,16 +12,47 @@ use GuzzleHttp\Psr7\Response;
 class MockClient
 {
 
+    /**
+     * @param null $body
+     * @param int $status
+     * @param array $headers
+     * @param string $protocol
+     * @return Client
+     */
     public static function make($body = null, $status = 200, array $headers = ['X-Foo' => 'Bar'], string $protocol = '1.1')
     {
-        return new Client(['handler' => HandlerStack::create(new MockHandler([new Response($status, $headers, $body, $protocol)]))]);
+        return static::makeFromMock(static::mock(static::repeatResponses(1, $status, $headers, $body, $protocol)));
     }
 
-    public static function repeat(int $quantity, $body = null, $status = 200, array $headers = ['X-Foo' => 'Bar'], string $protocol = '1.1')
+    /**
+     * @param int $quantity
+     * @param null $body
+     * @param int $status
+     * @param array $headers
+     * @param string $protocol
+     * @return array
+     */
+    public static function repeatResponses(int $quantity, $body = null, $status = 200, array $headers = ['X-Foo' => 'Bar'], string $protocol = '1.1')
     {
-        return new Client(['handler' => HandlerStack::create(new MockHandler(
-            array_fill(0, $quantity, new Response($status, $headers, $body, $protocol))
-        ))]);
+        return array_fill(0, $quantity, new Response($status, $headers, $body, $protocol));
+    }
+
+    /**
+     * @param array $responses
+     * @return MockHandler
+     */
+    public static function mock(array $responses)
+    {
+        return new MockHandler($responses);
+    }
+
+    /**
+     * @param MockHandler $mockHandler
+     * @return Client
+     */
+    public static function makeFromMock(MockHandler $mockHandler)
+    {
+        return new Client(['handler' => HandlerStack::create($mockHandler)]);
     }
 
 }

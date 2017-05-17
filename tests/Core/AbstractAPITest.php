@@ -3,7 +3,6 @@
 namespace QCloudSDKTests\Core;
 
 use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\Exceptions\ClientException;
@@ -75,15 +74,6 @@ class TestAPI extends AbstractAPI
 class RetryTestAPI extends TestAPI
 {
     protected $retryCodes = [1000];
-
-    protected function registerHttpMiddlewares()
-    {
-        $this->http->addMiddleware(Middleware::mapResponse(function(){
-            return new Response(200, [], json_encode([AbstractAPI::RESPONSE_CODE => 1000, AbstractAPI::RESPONSE_MESSAGE => 'System busy']));
-        }));
-        parent::registerHttpMiddlewares();
-    }
-
 }
 
 class AbstractAPITest extends TestCase
@@ -107,18 +97,20 @@ class AbstractAPITest extends TestCase
     public function testMiddleware()
     {
         $http = new Http();
-        $api = new RetryTestAPI(new Config());
+        $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
         $api->setHttp($http);
-        $http->setClient(MockClient::repeat(4, json_encode([AbstractAPI::RESPONSE_CODE => 1000, AbstractAPI::RESPONSE_MESSAGE => 'System busy'])));
-        $this->assertCount(4, $api->getHttp()->getMiddlewares());
+        $mock = MockClient::mock(MockClient::repeatResponses(4, json_encode([AbstractAPI::RESPONSE_CODE => 1000, AbstractAPI::RESPONSE_MESSAGE => 'System busy'])));
+        $http->setClient(MockClient::makeFromMock($mock));
+        $this->assertCount(3, $api->getHttp()->getMiddlewares());
         try{
             $api->request();
+            $this->fail('Should throw ClientException');
         }catch (ClientException $e){
             $this->assertSame(1000, $e->getCode());
             $this->assertSame('System busy', $e->getMessage());
         }
         $this->assertInstanceOf(RequestInterface::class, $api->getTapped());
-        //$this->assertSame(3, $client->getRequestCount());
+        $this->assertCount(0, $mock);
     }
 
     public function testSignature()
