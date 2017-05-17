@@ -5,7 +5,6 @@ namespace QCloudSDK\Core;
 
 
 use QCloudSDK\Core\Exceptions\ClientException;
-use QCloudSDK\Core\Exceptions\HttpException;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Log;
@@ -173,14 +172,9 @@ abstract class AbstractAPI
         ) {
             // Limit the number of retries to n
             if (++$retries <= $this->maxRetries && isset($response)) {
-                try{
-                    $json = $this->http->parseJSON($response);
-                    if(isset($json[static::RESPONSE_CODE]) && isset($this->retryCodes[$json[static::RESPONSE_CODE]])){
-                        Log::debug("Request to {$request->getUri()->getPath()} Result Code {$json[static::RESPONSE_CODE]}, Retry count {$retries}.");
-                        return true;
-                    }
-                }catch (HttpException $exception){
-                    return false;
+                if(preg_match('/' . preg_quote(json_encode(static::RESPONSE_CODE), '/') . ':\s*(\d+)/', strval($response->getBody()), $match) && isset($this->retryCodes[$match[1]])){
+                    Log::debug("Request to {$request->getUri()->getPath()} Result Code {$match[1]}, Retry count {$retries}.");
+                    return true;
                 }
             }
 
