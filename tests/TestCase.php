@@ -4,8 +4,26 @@
 namespace QCloudSDKTests;
 
 
+use QCloudSDK\Core\Http;
+
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+
+    /**
+     * @return Http
+     */
+    public function getReflectedHttp()
+    {
+        $http = new Http();
+        $http->setClient(new ReflectClient());
+        return $http;
+    }
+
+    protected function assertRequest(Http $http, \Closure $assertion)
+    {
+        call_user_func([$http->getClient(), 'assertRequest'], $assertion);
+    }
+
     /**
      * Tear down the test case.
      */

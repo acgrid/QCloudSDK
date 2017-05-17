@@ -22,7 +22,6 @@
 
 namespace QCloudSDK\Core;
 
-use Psr\Http\Message\StreamInterface;
 use QCloudSDK\Core\Exceptions\HttpException;
 use QCloudSDK\Utils\Log;
 use GuzzleHttp\Client as HttpClient;
@@ -118,7 +117,7 @@ class Http
     public function post($url, $data = [], array $query = [])
     {
         $options = [is_array($data) ? 'form_params' : 'body' => $data];
-        if(count($query)) $options += $query;
+        if(count($query)) $options += compact('query');
         return $this->request($url, 'POST', $options);
     }
 
@@ -299,7 +298,9 @@ class Http
      */
     protected function getHandler()
     {
-        $stack = HandlerStack::create();
+        $stack = $this->getClient()->getConfig('handler');
+
+        if(!isset($stack)) $stack = HandlerStack::create();
 
         foreach ($this->middlewares as $middleware) {
             $stack->push($middleware);

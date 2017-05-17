@@ -141,9 +141,9 @@ abstract class AbstractAPI
      */
     protected function registerHttpMiddlewares()
     {
-        $this->http->addMiddleware($this->logMiddleware());
-
         $this->http->addMiddleware($this->retryMiddleware());
+
+        $this->http->addMiddleware($this->logMiddleware());
     }
 
     /**
@@ -171,10 +171,10 @@ abstract class AbstractAPI
             RequestInterface $request,
             ResponseInterface $response = null
         ) {
-            // Limit the number of retries to 2
-            if ($retries <= $this->maxRetries && $response && $body = $response->getBody()) {
+            // Limit the number of retries to n
+            if ($retries <= $this->maxRetries && isset($response)) {
                 try{
-                    $json = $this->http->parseJSON($body);
+                    $json = $this->http->parseJSON($response);
                     if(isset($json[static::RESPONSE_CODE]) && isset($this->retryCodes[$json[static::RESPONSE_CODE]])){
                         Log::debug("Request to {$request->getUri()->getPath()} Result Code {$json[static::RESPONSE_CODE]}, Retry count {$retries}.");
                         return true;
