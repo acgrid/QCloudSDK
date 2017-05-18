@@ -12,7 +12,7 @@ after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml
 
-script: vendor/bin/phpunit test/ --coverage-text --coverage-clover ./build/logs/clover.xml
+script: vendor/bin/phpunit tests/ --coverage-text --coverage-clover ./build/logs/clover.xml
 
 matrix:
   fast_finish: true
