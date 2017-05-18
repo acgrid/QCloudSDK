@@ -20,7 +20,7 @@ class Signature extends ServiceAPI
      */
     public function add(string $text, string $remark)
     {
-        $params = compact('text', 'remark') + $this->prepareForGeneral($random);
+        $params = compact('text', 'remark') + $this->signForGeneral($random);
         return $this->request('add_sign', $random, $params);
     }
 
@@ -33,7 +33,7 @@ class Signature extends ServiceAPI
      */
     public function edit(int $sign_id, string $text, string $remark)
     {
-        $params = compact('sign_id', 'text', 'remark') + $this->prepareForGeneral($random);
+        $params = compact('sign_id', 'text', 'remark') + $this->signForGeneral($random);
         return $this->request('mod_sign', $random, $params);
     }
 
@@ -49,7 +49,7 @@ class Signature extends ServiceAPI
      */
     public function delete($idList)
     {
-        $params = $this->makeTemplateIdList($idList) + $this->prepareForGeneral($random);
+        $params = $this->makeTemplateIdList($idList) + $this->signForGeneral($random);
         return $this->request('del_sign', $random, $params);
     }
 
@@ -60,7 +60,7 @@ class Signature extends ServiceAPI
      */
     public function get($idList)
     {
-        $params = $this->makeTemplateIdList($idList) + $this->prepareForGeneral($random);
+        $params = $this->makeTemplateIdList($idList) + $this->signForGeneral($random);
         return $this->request('get_sign', $random, $params);
     }
     

@@ -62,7 +62,7 @@ class Voice extends API
      */
     public function sendVerifyCode(string $nationCode, string $mobile, string $verifyCode)
     {
-        $params = ['tel' => $this->makeMobile($nationCode, $mobile), 'msg' => $verifyCode] + $this->prepareContent() + $this->prepareForMobile($mobile, $random);
+        $params = ['tel' => $this->makeMobile($nationCode, $mobile), 'msg' => $verifyCode] + $this->prepareContent() + $this->signForMobile($mobile, $random);
         return $this->request('sendvoice', $random, $params);
     }
 
@@ -76,7 +76,7 @@ class Voice extends API
      */
     public function sendPrompt(string $nationCode, string $mobile, string $promptfile, int $prompttype = 2)
     {
-        $params = ['tel' => $this->makeMobile($nationCode, $mobile)] + compact($prompttype, $promptfile) + $this->prepareContent() + $this->prepareForMobile($mobile, $random);
+        $params = ['tel' => $this->makeMobile($nationCode, $mobile)] + compact($prompttype, $promptfile) + $this->prepareContent() + $this->signForMobile($mobile, $random);
         return $this->request('sendvoiceprompt', $random, $params);
     }
 

@@ -47,7 +47,7 @@ class Status extends ServiceAPI
     public function pullMultiStatus(int $max)
     {
         $type = $this->getType();
-        $params = compact('type', 'max') + $this->prepareForGeneral($random);
+        $params = compact('type', 'max') + $this->signForGeneral($random);
         return $this->request('pullstatus', $random, $params);
     }
 
@@ -65,7 +65,7 @@ class Status extends ServiceAPI
         $type = $this->getType();
         $begin_time = $this->makeTimestampParam($beginTime);
         $end_time = $this->makeTimestampParam($endTime);
-        $params = compact('type', 'max', 'begin_time', 'end_time', 'nationcode', 'mobile') + $this->prepareForGeneral($random);
+        $params = compact('type', 'max', 'begin_time', 'end_time', 'nationcode', 'mobile') + $this->signForGeneral($random);
         return $this->request('pullstatus4mobile', $random, $params);
     }
 
@@ -77,7 +77,7 @@ class Status extends ServiceAPI
      */
     protected function requestStatus(string $endpoint, int $begin_date, int $end_date)
     {
-        $params = compact('begin_date', 'end_date') + $this->prepareForGeneral($random);
+        $params = compact('begin_date', 'end_date') + $this->signForGeneral($random);
         return $this->request($endpoint, $random, $params);
     }
 

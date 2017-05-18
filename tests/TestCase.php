@@ -33,7 +33,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
             ],
             'tim' => [
                 'AppId' => '100032221',
-                'AppKey' => 'foobar',
+                'AppKey' => 'dffdfd6029698a5fdf4',
             ],
         ]);
     }
@@ -76,6 +76,13 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $this->assertRequest($this->http, function(Request $request) use ($assertion){
             $assertion(strval($request->getBody()));
+        });
+    }
+
+    protected function assertMyRequestJson(\Closure $assertion)
+    {
+        $this->assertMyRequestBody(function ($data) use ($assertion) {
+            $assertion(json_decode($data, true));
         });
     }
 

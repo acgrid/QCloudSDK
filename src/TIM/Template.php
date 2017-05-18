@@ -22,7 +22,7 @@ class Template extends ServiceAPI
      */
     protected function add(int $type, string $title, string $text, string $remark)
     {
-        $params = compact('type', 'title', 'text', 'remark') + $this->prepareForGeneral($random);
+        $params = compact('type', 'title', 'text', 'remark') + $this->signForGeneral($random);
         return $this->request('add_template', $random, $params);
     }
 
@@ -47,7 +47,7 @@ class Template extends ServiceAPI
      */
     public function edit(int $tpl_id, int $type, string $title, string $text, string $remark)
     {
-        $params = compact('tpl_id', 'type', 'title', 'text', 'remark') + $this->prepareForGeneral($random);
+        $params = compact('tpl_id', 'type', 'title', 'text', 'remark') + $this->signForGeneral($random);
         return $this->request('edit_template', $random, $params);
     }
 
@@ -63,7 +63,7 @@ class Template extends ServiceAPI
      */
     public function delete($idList)
     {
-        $params = $this->makeTemplateIdList($idList) + $this->prepareForGeneral($random);
+        $params = $this->makeTemplateIdList($idList) + $this->signForGeneral($random);
         return $this->request('del_template', $random, $params);
     }
 
@@ -74,7 +74,7 @@ class Template extends ServiceAPI
      */
     public function getSpecified($idList)
     {
-        $params = $this->makeTemplateIdList($idList) + $this->prepareForGeneral($random);
+        $params = $this->makeTemplateIdList($idList) + $this->signForGeneral($random);
         return $this->request('get_template', $random, $params);
     }
 
@@ -86,7 +86,7 @@ class Template extends ServiceAPI
      */
     public function getPaged(int $offset = 0, int $max = 50)
     {
-        $params = ['tpl_page' => compact('offset', 'max')] + $this->prepareForGeneral($random);
+        $params = ['tpl_page' => compact('offset', 'max')] + $this->signForGeneral($random);
         return $this->request('get_template', $random, $params);
     }
     

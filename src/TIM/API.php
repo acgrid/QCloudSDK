@@ -40,25 +40,29 @@ abstract class API extends AbstractAPI
         return $this->parseJSON('json', $this->endpoint . $endpoint, $params, ['sdkappid' => $this->appId, 'random' => $random]);
     }
 
-    protected function prepareForMobile($mobiles, &$random)
+    public function signForMobile($mobiles, &$random, int $time = null)
     {
         if(is_array($mobiles)){
-            $mobiles = join(',', array_map(function($item){
-                return $item['mobile'];
-            }, $mobiles));
+            if(isset($mobiles['mobile'])){
+                $mobiles = $mobiles['mobile'];
+            }else{
+                $mobiles = join(',', array_map(function($item){
+                    return $item['mobile'];
+                }, $mobiles));
+            }
         }
         $params = [];
-        $params['time'] = $time = time();
-        $random = Nonce::make();
+        $params['time'] = $time ?? time();
+        if(!isset($random)) $random = Nonce::make();
         $params['sig'] = hash("sha256", "appkey={$this->appKey}&random=$random&time=$time&mobile=$mobiles"); // https://github.com/qcloudsms/qcloudsms/blob/master/demo/php/SmsTools.php#L12
         return $params;
     }
 
-    protected function prepareForGeneral(&$random)
+    public function signForGeneral(&$random, int $time = null)
     {
         $params = [];
-        $params['time'] = $time = time();
-        $random = Nonce::make();
+        $params['time'] = $time ?? time();
+        if(!isset($random)) $random = Nonce::make();
         $params['sig'] = hash("sha256", "appkey={$this->appKey}&random=$random&time=$time");
         return $params;
     }

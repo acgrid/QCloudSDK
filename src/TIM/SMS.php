@@ -105,8 +105,8 @@ class SMS extends API
 
     protected function prepareContent()
     {
-        if(!isset($this->sign)) throw new \LogicException('Cannot send SMS without a signature.');
-        $params = ['sign' => $this->sign];
+        $params = [];
+        if(isset($this->sign)) $params['sign'] = $this->sign;
         if(isset($this->template)){
             $params['tpl_id'] = $this->template;
             $params['params'] = $this->templateVariables;
@@ -123,7 +123,7 @@ class SMS extends API
 
     protected function send($endpoint, $normalizedNumber)
     {
-        $params = ['tel' => $normalizedNumber] + $this->prepareContent() + $this->prepareForMobile([$normalizedNumber], $random);
+        $params = ['tel' => $normalizedNumber] + $this->prepareContent() + $this->signForMobile($normalizedNumber, $random);
         return $this->request($endpoint, $random, $params);
     }
 
@@ -137,7 +137,9 @@ class SMS extends API
     {
         if(empty($domesticNumbers)) return null;
         if(count($domesticNumbers) > static::MAX_MULTI) throw new \InvalidArgumentException('Reached the limit of receivers in once multiple sending.');
-        return $this->send('sendmultisms2', array_map([$this, 'makeMobile'], $domesticNumbers));
+        return $this->send('sendmultisms2', array_map(function($domesticNumber){
+            return $this->makeMobile(static::DOMESTIC_CODE, $domesticNumber);
+        }, $domesticNumbers));
     }
 
     /**
