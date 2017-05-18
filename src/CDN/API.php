@@ -347,7 +347,7 @@ class API extends AbstractAPI
     {
         return $this->request($this->createAction(__FUNCTION__) + $this->makeArrayParam('dirs', $dirs, function(&$dir){
             $this->assertUrl($dir);
-            if($dir[-1] !== '/') $dir .= '/';
+            if(substr($dir, -1) !== '/') $dir .= '/'; // TODO $dir[-1] for PHP >=7.1
         }));
     }
 
