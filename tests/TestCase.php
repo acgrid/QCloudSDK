@@ -10,6 +10,11 @@ use QCloudSDK\Core\Http;
 class TestCase extends \PHPUnit_Framework_TestCase
 {
 
+    protected function createParam($key, $action)
+    {
+        return [$key => $action];
+    }
+
     /**
      * @return Http
      */
