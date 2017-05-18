@@ -32,4 +32,12 @@ class SignatureTest extends TestCase
     {
         $this->assertSame('v6+um3VE3lxGz97PmnSg6+/V9PZhPTIwMDAwMSZiPW5ld2J1Y2tldCZrPUFLSURVZkxVRVVpZ1FpWHFtN0NWU3NwS0pudWFpSUt0eHFBdiZlPTE0NzA3MzcwMDAmdD0xNDcwNzM2OTQwJnI9NDkwMjU4OTQzJmY9', $this->api->signMultiEffect(60, $this->time, $this->rand));
     }
+
+    public function testRandom()
+    {
+        $sign = base64_decode($this->api->signMultiEffect());
+        $this->assertContains('&t=' . intdiv(time(), 100), $sign);
+        $this->assertRegExp('/r=\d{5}/', $sign);
+    }
+
 }
