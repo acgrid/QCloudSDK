@@ -66,7 +66,7 @@ class SMSTest extends TestCase
             $this->assertSame('poi', $json['ext']);
         });
 
-        $this->sms->setSign('SOS')->useTemplate(2048, ['验证码', '1334'])->setExtend('VERITY')->sendTo('+8165243031');
+        $this->sms->setSign('SOS')->useTemplate(2048, ['验证码', 1334])->setExtend('VERITY')->sendTo('+8165243031');
         $this->assertMyRequestUri(function(Uri $uri){
             $this->assertContains('sendisms', $uri->getPath());
         });
