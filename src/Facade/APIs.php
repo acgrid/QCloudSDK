@@ -26,18 +26,24 @@ class APIs extends Container
         Provider\COS::class,
     ];
 
-    public function __construct(array $config)
+    public function __construct(array $configData)
     {
         parent::__construct();
-        $this['config'] = $config = new Config($config);
+        $this['config'] = $config = new Config($configData);
         $this->registerProviders();
         Http::setDefaultOptions($config->get(Config::GUZZLE_DEFAULTS, static::GUZZLE_DEFAULTS));
         if($config->get('debug', false)){
-            $masked = clone $config;
-            foreach ([Config::COMMON_SECRET_ID, Config::COMMON_SECRET_KEY] as $key) {
-                !$masked->has($key) || $masked[$key] = '***'.substr($masked[$key], -5);
-            }
-            Log::debug('Current config:', $masked->toArray());
+            $masked = $configData;
+            $this->maskConfig($masked);
+            Log::debug('Current config:', $masked);
+        }
+    }
+
+    protected function maskConfig(array &$config)
+    {
+        foreach($config as $key => $value){
+            if(is_array($value)) $this->maskConfig($config[$key]);
+            if(stripos($key, 'key') !== false || stripos($key, 'id') !== false) $config[$key] = '***'.substr($config[$key], -5);
         }
     }
 

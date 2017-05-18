@@ -43,10 +43,11 @@ class FacadeTest extends TestCase
         $logger->pushHandler($handler);
         Log::setLogger($logger);
         $this->assertSame($logger, Log::getLogger());
-        new APIs(['debug' => true, Config::COMMON_SECRET_ID => 'abcdefghijklmn', Config::COMMON_SECRET_KEY => 'foo123456789']);
-        $this->assertTrue($handler->hasRecordThatPasses(function($record){
-            return $record['message'] === 'Current config:' && $record['context'] === ['debug' => true, Config::COMMON_SECRET_ID => '***jklmn', Config::COMMON_SECRET_KEY => '***56789'];
-        }, Logger::DEBUG));
+        new APIs(['debug' => true, Config::COMMON_SECRET_ID => 'abcdefghijklmn', Config::COMMON_SECRET_KEY => 'foo123456789', 'foo' => ['AppKey' => '87743144531']]);
+        $handler->hasRecordThatPasses(function($record){
+            $this->assertSame('Current config:', $record['message']);
+            $this->assertSame(['debug' => true, Config::COMMON_SECRET_ID => '***jklmn', Config::COMMON_SECRET_KEY => '***56789', 'foo' => ['AppKey' => '***44531']], $record['context']);
+        }, Logger::DEBUG);
     }
 
     public function testGuzzleOptions()
