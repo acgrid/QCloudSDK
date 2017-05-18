@@ -78,32 +78,52 @@ class API extends AbstractAPI
         $this->bucket = $bucket;
     }
 
-    protected function doSign(int $expire, string $file = '')
+    /**
+     * @link https://www.qcloud.com/document/product/436/6054
+     * @param int $expire
+     * @param string $file
+     * @param int|null $time
+     * @param string|null $rand
+     * @return string
+     */
+    protected function doSign(int $expire, string $file = '', int $time = null, string $rand = null)
     {
-        $now = time();
+        if(!isset($time)) $time = time();
         $params = [
             'a' => $this->appId,
             'b' => $this->bucket,
             'k' => $this->appSecretId,
-            'e' => $now + $expire,
-            't' => $now,
-            'r' => Nonce::make(),
+            'e' => $expire ? $time + $expire : 0,
+            't' => $time,
+            'r' => $rand ?? Nonce::make(),
             'f' => join('/', array_map('urlencode', explode('/', $file)))
         ];
         $toSignature = join('&', array_map(function($k, $v){
             return "$k=$v";
         }, array_keys($params), array_values($params)));
-        return base64_encode(hash_hmac('SHA1', $toSignature, true) . $toSignature);
+        return base64_encode(hash_hmac('SHA1', $toSignature, $this->appSecretKey, true) . $toSignature);
     }
 
-    public function signMultiEffect(int $ttl = 86400)
+    /**
+     * @param int $ttl
+     * @param int|null $time
+     * @param string|null $rand
+     * @return string
+     */
+    public function signMultiEffect(int $ttl = 86400, int $time = null, string $rand = null)
     {
-        return $this->doSign($ttl);
+        return $this->doSign($ttl, '', $time, $rand);
     }
 
-    public function signOnce(string $path)
+    /**
+     * @param string $path
+     * @param int|null $time
+     * @param string|null $rand
+     * @return string
+     */
+    public function signOnce(string $path, int $time = null, string $rand = null)
     {
-        return $this->doSign(0, "/{$this->appId}/{$this->bucket}/{$path}");
+        return $this->doSign(0, "/{$this->appId}/{$this->bucket}/{$path}", $time, $rand);
     }
 
     /**

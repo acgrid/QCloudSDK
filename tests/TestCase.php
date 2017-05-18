@@ -27,8 +27,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
             Config::COMMON_SECRET_ID => 'foo',
             Config::COMMON_SECRET_KEY => 'bar',
             'cos' => [
-                'appId' => '',
-                'bucket' => 'zzz',
+                'AppId' => '200001',
+                'bucket' => 'newbucket',
+                Config::COMMON_SECRET_ID => 'AKIDUfLUEUigQiXqm7CVSspKJnuaiIKtxqAv',
+                Config::COMMON_SECRET_KEY => 'bLcPnl88WU30VY57ipRhSePfPdOfSruK',
                 Config::COMMON_REGION => 'gz',
             ],
             'tim' => [
