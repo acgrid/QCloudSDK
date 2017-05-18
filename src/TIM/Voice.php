@@ -31,7 +31,7 @@ class Voice extends API
      */
     public function setPlayTimes(int $playTimes): Voice
     {
-        if($this->playTimes > 0) $this->playTimes = $playTimes;
+        if($playTimes > 0) $this->playTimes = $playTimes;
         return $this;
     }
 
@@ -76,7 +76,7 @@ class Voice extends API
      */
     public function sendPrompt(string $nationCode, string $mobile, string $promptfile, int $prompttype = 2)
     {
-        $params = ['tel' => $this->makeMobile($nationCode, $mobile)] + compact($prompttype, $promptfile) + $this->prepareContent() + $this->signForMobile($mobile, $random);
+        $params = ['tel' => $this->makeMobile($nationCode, $mobile)] + compact('promptfile', 'prompttype') + $this->prepareContent() + $this->signForMobile($mobile, $random);
         return $this->request('sendvoiceprompt', $random, $params);
     }
 
