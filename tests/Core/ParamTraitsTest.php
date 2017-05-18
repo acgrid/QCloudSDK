@@ -10,6 +10,7 @@ use QCloudSDK\Core\DateTimeTrait;
 use QCloudSDK\Core\FormDataTrait;
 use QCloudSDK\Core\IntegerArrayTrait;
 use QCloudSDK\Core\JsonParamTrait;
+use QCloudSDK\Core\OnOffParamTrait;
 use QCloudSDK\Core\TimestampTrait;
 use QCloudSDKTests\TestCase;
 
@@ -23,7 +24,7 @@ class ParamTraitsTest extends TestCase
     use IntegerArrayTrait;
     use JsonParamTrait;
     use TimestampTrait;
-
+    use OnOffParamTrait;
 
     public function testAction()
     {
@@ -104,6 +105,21 @@ class ParamTraitsTest extends TestCase
             $this->makeTimestampParam([]);
             $this->fail('Should throw an exception on nothing can be a date.');
         }catch (\InvalidArgumentException $e) {}
+    }
+
+    public function testOnOffParam()
+    {
+        $this->assertSame('on', $this->makeOnOffParam('ON'));
+        $this->assertSame('on', $this->makeOnOffParam(1));
+        $this->assertSame('on', $this->makeOnOffParam(true));
+        $this->assertSame('off', $this->makeOnOffParam(0));
+        $this->assertSame('off', $this->makeOnOffParam(false));
+        $params = [];
+        $this->ensureOnOffParam($params, 'foo');
+        $this->assertSame([], $params);
+        $params['foo'] = false;
+        $this->ensureOnOffParam($params, 'foo');
+        $this->assertSame(['foo' => 'off'], $params);
     }
 
 }

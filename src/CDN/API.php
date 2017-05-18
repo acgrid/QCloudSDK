@@ -10,6 +10,7 @@ use QCloudSDK\Core\ArrayParamTrait;
 use QCloudSDK\Core\DateTimeTrait;
 use QCloudSDK\Core\GeneralSignatureTrait;
 use QCloudSDK\Core\JsonParamTrait;
+use QCloudSDK\Core\OnOffParamTrait;
 use QCloudSDK\Facade\Config;
 
 class API extends AbstractAPI
@@ -48,6 +49,7 @@ class API extends AbstractAPI
     use ArrayParamTrait;
     use DateTimeTrait;
     use JsonParamTrait;
+    use OnOffParamTrait;
 
     protected function request(array $params)
     {
@@ -137,11 +139,9 @@ class API extends AbstractAPI
     {
         $params += $this->createAction(__FUNCTION__) + compact('hostId');
         if(isset($projectId)) $params += compact('projectId');
-        $this->ensureJsonParam($params, self::CONFIG_CACHE);
-        $this->ensureJsonParam($params, self::CONFIG_REFER);
-        if(isset($params[static::CONFIG_FULL_URL]) && !is_string($params[static::CONFIG_FULL_URL])){
-            $params[static::CONFIG_FULL_URL] = $params[static::CONFIG_FULL_URL] ? 'on' : 'off';
-        }
+        $this->ensureJsonParam($params, static::CONFIG_CACHE);
+        $this->ensureJsonParam($params, static::CONFIG_REFER);
+        $this->ensureOnOffParam($params, static::CONFIG_FULL_URL);
         return $this->request($params);
     }
 
