@@ -45,7 +45,7 @@ class Template extends ServiceAPI
      * @param string $remark
      * @return \QCloudSDK\Utils\Collection
      */
-    public function edit(int $tpl_id, int $type, string $title, string $text, string $remark)
+    public function mod(int $tpl_id, int $type, string $title, string $text, string $remark)
     {
         $params = compact('tpl_id', 'type', 'title', 'text', 'remark') + $this->signForGeneral($random);
         return $this->request('mod_template', $random, $params);

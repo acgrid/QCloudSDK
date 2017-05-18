@@ -32,6 +32,7 @@ class TemplateTest extends TestCase
             $this->assertSame('baz', $json['remark']);
             $this->assertSame(SMS::TYPE_NORMAL, $json['type']);
         });
+
         $this->template->addPromotion('foo', 'bar', 'baz');
         $this->assertMyRequestJson(function ($json) {
             $this->assertSame(SMS::TYPE_PROMOTION, $json['type']);
@@ -40,7 +41,7 @@ class TemplateTest extends TestCase
 
     public function testEdit()
     {
-        $this->template->edit(789, SMS::TYPE_PROMOTION, 'foo', 'bar', 'poi');
+        $this->template->mod(789, SMS::TYPE_PROMOTION, 'foo', 'bar', 'poi');
         $this->assertMyRequestUri(function (Uri $uri){
             $this->assertStringEndsWith('mod_template', $uri->getPath());
         });
