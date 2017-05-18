@@ -21,20 +21,26 @@ class File extends API
 
     use FormDataTrait;
 
+    protected function makeBooleanInt($value)
+    {
+        return isset($value) ? ($value ? 1 : 0) : null;
+    }
+
     /**
      * @link https://www.qcloud.com/document/product/436/6066
      * @param string $path
      * @param string $filecontent
      * @param string|null $biz_attr
-     * @param int|null $insertOnly
+     * @param boolean $insertOnly
      * @return \QCloudSDK\Utils\Collection
      * @throws InvalidArgumentException
      */
-    public function uploadString(string $path, string $filecontent, string $biz_attr = null, int $insertOnly = null)
+    public function uploadString(string $path, string $filecontent, string $biz_attr = null, $insertOnly = null)
     {
         if(strlen($filecontent) >= static::UPLOAD_MAX_SIZE) throw new InvalidArgumentException('Data is too large to upload directly. Use chunk-style uploading.');
         $op = 'upload';
         $sha1 = sha1($filecontent);
+        $insertOnly = $this->makeBooleanInt($insertOnly);
         return $this->targetSigned($path)->setParams($this->makeFormDataFromArray(compact('op', 'filecontent', 'sha1', 'biz_attr', 'insertOnly')))->postFormDataRequest();
     }
 
@@ -43,17 +49,20 @@ class File extends API
      * @param string $path
      * @param string $localFile
      * @param string|null $biz_attr
-     * @param int|null $insertOnly
+     * @param boolean $insertOnly
      * @return \QCloudSDK\Utils\Collection
      * @throws InvalidArgumentException
      */
-    public function uploadFile(string $path, string $localFile, string $biz_attr = null, int $insertOnly = null)
+    public function uploadFile(string $path, string $localFile, string $biz_attr = null, $insertOnly = null)
     {
         if(!is_file($localFile) || !is_readable($localFile)) throw new InvalidArgumentException("'$localFile' does not exist or can not be read.");
         if(filesize($localFile) >= static::UPLOAD_MAX_SIZE) throw new InvalidArgumentException('Data is too large to upload directly. Use chunk-style uploading.');
         $op = 'upload';
         $sha1 = sha1_file($localFile);
-        return $this->targetSigned($path)->setParams($this->makeFormDataFromArray(compact('op', 'sha1', 'biz_attr', 'insertOnly')) + ['name' => 'filecontent', 'filename' => $localFile])->postFormDataRequest();
+        $insertOnly = $this->makeBooleanInt($insertOnly);
+        $params = $this->makeFormDataFromArray(compact('op', 'sha1', 'biz_attr', 'insertOnly'));
+        $params[] = ['name' => 'filecontent', 'contents' => fopen($localFile, 'rb'), 'filename' => $localFile];
+        return $this->targetSigned($path)->setParams($params)->postFormDataRequest();
     }
 
     /**
@@ -62,7 +71,7 @@ class File extends API
      * @param int $totalSize
      * @param int $sliceSize
      * @param string|null $biz_attr
-     * @param int|null $insertOnly
+     * @param boolean $insertOnly
      * @return \QCloudSDK\Utils\Collection
      */
     public function uploadSliceInit(
@@ -70,9 +79,10 @@ class File extends API
         int $totalSize,
         int $sliceSize,
         string $biz_attr = null,
-        int $insertOnly = null
+        $insertOnly = null
     ) {
-        return $this->targetSigned($path)->setParams($this->makeFormDataFromArray(['filesize' => $totalSize, 'slice_size' => $sliceSize] + compact('biz_attr', 'insertOnly')))->postFormDataRequest();
+        $insertOnly = $this->makeBooleanInt($insertOnly);
+        return $this->targetSigned($path)->setParams($this->makeFormDataFromArray(['op' => 'upload_slice_init', 'filesize' => $totalSize, 'slice_size' => $sliceSize] + compact('biz_attr', 'insertOnly')))->postFormDataRequest();
     }
 
     /**
@@ -116,11 +126,12 @@ class File extends API
      * @link https://www.qcloud.com/document/product/436/6730
      * @param string $srcPath
      * @param string $destPath
-     * @param int|null $overwrite
+     * @param boolean $overwrite
      * @return \QCloudSDK\Utils\Collection
      */
-    public function move(string $srcPath, string $destPath, int $overwrite = null)
+    public function move(string $srcPath, string $destPath, $overwrite = null)
     {
+        $overwrite = $this->makeBooleanInt($overwrite);
         return $this->targetOnceSigned($srcPath)->setParams($this->makeFormDataFromArray(['op' => 'move', 'dest_fileid' => $destPath, 'to_over_write' => $overwrite]))->postFormDataRequest();
     }
 
@@ -128,11 +139,12 @@ class File extends API
      * @link https://www.qcloud.com/document/product/436/7419
      * @param string $srcPath
      * @param string $destPath
-     * @param int|null $overwrite
+     * @param boolean $overwrite
      * @return \QCloudSDK\Utils\Collection
      */
-    public function copy(string $srcPath, string $destPath, int $overwrite = null)
+    public function copy(string $srcPath, string $destPath, $overwrite = null)
     {
+        $overwrite = $this->makeBooleanInt($overwrite);
         return $this->targetOnceSigned($srcPath)->setParams($this->makeFormDataFromArray(['op' => 'copy', 'dest_fileid' => $destPath, 'to_over_write' => $overwrite]))->postFormDataRequest();
     }
 
@@ -174,8 +186,8 @@ class File extends API
      */
     protected function getObject()
     {
-        $this->headers['Host'] = sprintf('%s-%s.%s.mycloud.com', $this->bucket, $this->appId, $this->appRegion);
-        return $this->getHttp()->request("/$this->path", 'GET', ['headers' => $this->headers]);
+        $this->headers->set('Host', sprintf('%s-%s.%s.mycloud.com', $this->bucket, $this->appId, $this->appRegion));
+        return $this->getHttp()->request($this->buildUrl(), 'GET', ['headers' => $this->headers->all()]);
     }
 
     public function downloadPublic($path)

@@ -109,6 +109,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
         });
     }
 
+    protected function makeFormData(string $name, string $value, string $filename = null)
+    {
+        return sprintf("name=\"%s\"%s\r\nContent-Length: %u\r\n\r\n%s", $name, isset($filename) ? "; filename=\"$filename\"" : '', strlen($value), $value);
+    }
+
     /**
      * Tear down the test case.
      */

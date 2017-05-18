@@ -5,7 +5,6 @@ namespace QCloudSDK\COS;
 
 
 use QCloudSDK\Core\AbstractAPI;
-use QCloudSDK\Core\FormDataTrait;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Nonce;
@@ -60,7 +59,12 @@ class API extends AbstractAPI
      */
     protected $headers;
 
-    use FormDataTrait;
+    const ATTR_AUTHORITY = 'authority';
+    const ATTR_HEADERS = 'custom_headers';
+
+    const AUTH_INVALID = 'eInvalid';
+    const AUTH_WR_PRIVATE = 'eWRPrivate';
+    const AUTH_W_PRIVATE_R_PUBLIC = 'WPrivateRPublic';
 
     protected function init()
     {
@@ -207,8 +211,8 @@ class API extends AbstractAPI
 
     protected function request(string $method, string $paramOption)
     {
-        $params = ($this->params ?? []) + ['op' => $this->op];
-        if($paramOption === 'multipart') $params = $this->makeFormDataFromArray($params);
+        $params = $this->params ?? [];
+        if($paramOption !== 'multipart') $params += ['op' => $this->op];
         return $this->parseJSON('request', $this->buildUrl(), $method, [$paramOption => $params, 'headers' => $this->headers->all()]);
     }
 

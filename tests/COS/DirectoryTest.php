@@ -74,6 +74,7 @@ class DirectoryTest extends TestCase
     public function testDelete()
     {
         $this->api->delete('poi');
+        $this->assertMyRequestMethod('POST');
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
             $this->assertStringEndsWith('&f=/200001/newbucket/poi/', base64_decode($headers['Authorization'][0]));

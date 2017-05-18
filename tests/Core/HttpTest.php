@@ -145,9 +145,9 @@ namespace QCloudSDKTests\Core {
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('http://example.org?op=upload', $request->getUri()->__toString());
                 $body = strval($request->getBody());
-                $this->assertContains("Content-Disposition: form-data; name=\"foo\"\r\nContent-Length: 3\r\n\r\nbar", $body);
-                $this->assertContains("Content-Disposition: form-data; name=\"hello\"\r\nContent-Length: 5\r\n\r\nworld", $body);
-                $this->assertContains("Content-Disposition: form-data; name=\"var\"\r\nContent-Length: 3\r\n\r\npoi", $body);
+                $this->assertContains($this->makeFormData('foo', 'bar'), $body);
+                $this->assertContains($this->makeFormData('hello', 'world'), $body);
+                $this->assertContains($this->makeFormData('var', 'poi'), $body);
             });
 
         }
