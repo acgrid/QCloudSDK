@@ -48,7 +48,7 @@ class Template extends ServiceAPI
     public function edit(int $tpl_id, int $type, string $title, string $text, string $remark)
     {
         $params = compact('tpl_id', 'type', 'title', 'text', 'remark') + $this->signForGeneral($random);
-        return $this->request('edit_template', $random, $params);
+        return $this->request('mod_template', $random, $params);
     }
 
     protected function makeTemplateIdList($idList)
