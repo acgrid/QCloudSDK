@@ -5,28 +5,39 @@ namespace QCloudSDK\COS;
 
 
 use QCloudSDK\Core\AbstractAPI;
+use QCloudSDK\Core\FormDataTrait;
 use QCloudSDK\Facade\Config;
+use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Nonce;
 
 class API extends AbstractAPI
 {
     const CONFIG_SECTION = 'cos';
 
-    protected $apiUrl;
-
-    protected $appId;
-
-    protected $appSecretId;
-
-    protected $appSecretKey;
-
-    protected $appRegion;
-
     const API_URL = 'ApiUrl';
     const API_VERSION = 'ApiVersion';
     const APP_ID = 'AppId';
     const BUCKET = 'bucket';
-
+    /**
+     * @var string
+     */
+    protected $apiUrl;
+    /**
+     * @var string
+     */
+    protected $appId;
+    /**
+     * @var string
+     */
+    protected $appSecretId;
+    /**
+     * @var string
+     */
+    protected $appSecretKey;
+    /**
+     * @var string
+     */
+    protected $appRegion;
     // USED FOR BUILD REQUEST
     /**
      * @var string
@@ -45,9 +56,11 @@ class API extends AbstractAPI
      */
     protected $params;
     /**
-     * @var array
+     * @var Collection
      */
     protected $headers;
+
+    use FormDataTrait;
 
     protected function init()
     {
@@ -58,8 +71,13 @@ class API extends AbstractAPI
         // Only for COS
         $this->appId = $this->getLocalConfig(static::APP_ID);
         $this->bucket = $this->getLocalConfig(static::BUCKET);
+        $this->setApiUrl();
+        $this->headers = new Collection(['Host' => "{$this->appRegion}.file.myqcloud.com"]);
+    }
+
+    protected function setApiUrl()
+    {
         $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s-%s.cos%s.myqcloud.com/files/v%u', $this->bucket, $this->appId, $this->appRegion, $this->getLocalConfig(static::API_VERSION, 2)));
-        $this->headers['Host'] = "{$this->appRegion}.file.myqcloud.com";
     }
 
     /**
@@ -72,10 +90,23 @@ class API extends AbstractAPI
 
     /**
      * @param string $bucket
+     * @return $this
      */
     public function setBucket(string $bucket)
     {
-        $this->bucket = $bucket;
+        if($bucket !== $this->bucket){
+            $this->bucket = $bucket;
+            $this->setApiUrl();
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getHeaders(): Collection
+    {
+        return $this->headers;
     }
 
     /**
@@ -148,16 +179,6 @@ class API extends AbstractAPI
         return $this;
     }
 
-    /**
-     * @param array $headers
-     * @return API
-     */
-    protected function setHeaders(array $headers): API
-    {
-        $this->headers = $headers;
-        return $this;
-    }
-
     protected function buildUrl()
     {
         return str_replace('//', '/', join('/', [$this->apiUrl, $this->bucket, $this->path]));
@@ -166,37 +187,44 @@ class API extends AbstractAPI
     public function target(string $path)
     {
         $this->path = $path;
-        unset($this->headers['Authorization']);
+        $this->headers->forget('Authorization');
         return $this;
     }
 
     public function targetOnceSigned(string $path)
     {
         $this->target($path);
-        $this->headers['Authorization'] = $this->signOnce($path);
+        $this->headers->set('Authorization', $this->signOnce($path));
         return $this;
     }
 
     public function targetSigned(string $path)
     {
         $this->target($path);
-        $this->headers['Authorization'] = $this->signMultiEffect();
+        $this->headers->set('Authorization', $this->signMultiEffect());
         return $this;
+    }
+
+    protected function request(string $method, string $paramOption)
+    {
+        $params = ($this->params ?? []) + ['op' => $this->op];
+        if($paramOption === 'multipart') $params = $this->makeFormDataFromArray($params);
+        return $this->parseJSON('request', $this->buildUrl(), $method, [$paramOption => $params, 'headers' => $this->headers->all()]);
     }
 
     public function getQueryRequest()
     {
-        return $this->parseJSON('request', $this->buildUrl(), 'GET', ['query' => $this->params + compact('op'), 'headers' => $this->headers]);
+        return $this->request('GET','query');
     }
 
     public function postJsonRequest()
     {
-        return $this->parseJSON('request', $this->buildUrl(), 'POST', ['json' => $this->params + compact('op'), 'headers' => $this->headers]);
+        return $this->request('POST','json');
     }
 
     public function postFormDataRequest()
     {
-        return $this->parseJSON('request', $this->buildUrl(), 'POST', ['multipart' => $this->params + compact('op'), 'headers' => $this->headers]);
+        return $this->request('POST','multipart');
     }
 
 }

@@ -74,6 +74,13 @@ class TestCase extends \PHPUnit_Framework_TestCase
         }
     }
 
+    protected function assertMyRequestMethod(string $method)
+    {
+        $this->assertRequest($this->http, function(Request $request) use ($method){
+            $this->assertSame($method, $request->getMethod());
+        });
+    }
+
     protected function assertMyRequestBody(\Closure $assertion)
     {
         $this->assertRequest($this->http, function(Request $request) use ($assertion){
