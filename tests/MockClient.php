@@ -25,6 +25,18 @@ class MockClient
     }
 
     /**
+     * @param null $json
+     * @param int $status
+     * @param array $headers
+     * @param string $protocol
+     * @return Client
+     */
+    public static function makeJson($json = null, $status = 200, array $headers = ['X-Foo' => 'Bar'], string $protocol = '1.1')
+    {
+        return static::make(json_encode($json), $status, $headers, $protocol);
+    }
+
+    /**
      * @param int $quantity
      * @param null $body
      * @param int $status

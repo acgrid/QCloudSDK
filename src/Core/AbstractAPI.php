@@ -221,7 +221,7 @@ abstract class AbstractAPI
      * @param string $failureMsg
      * @return Collection
      */
-    protected function expectResult(string $key, Collection $data, $failureMsg = 'Remote API do not return expected logs.')
+    protected function expectResult(string $key, Collection $data, $failureMsg = 'Remote API do not return expected data.')
     {
         if(null === ($expected = $data->get($key))) throw new \LogicException($failureMsg);
         return new Collection($expected);

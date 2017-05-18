@@ -10,7 +10,7 @@ class Refresh extends API
 {
     protected function getQueryResult(Collection $data)
     {
-        return $this->expectResult('data.logs', $data);
+        return $this->expectResult('data.logs', $data, 'Expected payload in path data.logs.');
     }
 
     public function queryById(int $taskId)
@@ -30,7 +30,7 @@ class Refresh extends API
 
     protected function getTaskId(Collection $data)
     {
-        return $this->expectResult('data.task_id', $data);
+        return $this->expectResult('data', $data);
     }
 
     public function ensureRefreshUrls($urls)

@@ -1,6 +1,6 @@
 <?php
 
-namespace CDN;
+namespace QCloudSDKTests\CDN;
 
 use QCloudSDK\CDN\API;
 use QCloudSDK\Facade\Config;
