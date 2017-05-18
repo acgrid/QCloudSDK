@@ -12,6 +12,7 @@ use QCloudSDK\Utils\Log;
  * Class APIs
  * @package QCloudSDK\Facade
  * @property \QCloudSDK\CDN\Facade $cdn
+ * @property \QCloudSDK\COS\Facade $cos
  * @property \QCloudSDK\TIM\Facade $tim
  * @property \QCloudSDK\WSS\API    $wss
  */

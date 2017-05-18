@@ -12,7 +12,7 @@ class COS implements ServiceProviderInterface
 {
     public function register(Container $pimple)
     {
-        $pimple['cdn'] = function (Container $container){
+        $pimple['cos'] = function (Container $container){
             return new Facade($container);
         };
     }

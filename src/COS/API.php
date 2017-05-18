@@ -5,7 +5,6 @@ namespace QCloudSDK\COS;
 
 
 use QCloudSDK\Core\AbstractAPI;
-use QCloudSDK\Core\Exceptions\InvalidConfigException;
 use QCloudSDK\Utils\Nonce;
 
 class API extends AbstractAPI
@@ -59,7 +58,6 @@ class API extends AbstractAPI
         $this->appSecretKey = $this->getLocalConfig(static::APP_SECRET_KEY);
         $this->appRegion = $this->getLocalConfig(static::APP_REGION);
         $this->bucket = $this->getLocalConfig(static::BUCKET);
-        if(!isset($this->appId, $this->appSecretId, $this->appSecretKey, $this->appRegion, $this->bucket)) throw new InvalidConfigException('TIM AppId or AppKey is not defined!');
         $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s-%s.cos%s.myqcloud.com/files/v%u', $this->bucket, $this->appId, $this->appRegion, $this->getLocalConfig(static::API_VERSION, 2)));
         $this->headers['Host'] = "{$this->appRegion}.file.myqcloud.com";
     }

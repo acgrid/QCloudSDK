@@ -6,9 +6,18 @@ use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use QCloudSDK\CDN\API;
+use QCloudSDK\CDN\Refresh;
 use QCloudSDK\Core\Http;
+use QCloudSDK\COS\Directory;
+use QCloudSDK\COS\File;
 use QCloudSDK\Facade\APIs;
 use QCloudSDK\Facade\Config;
+use QCloudSDK\TIM\Signature;
+use QCloudSDK\TIM\SMS;
+use QCloudSDK\TIM\Status;
+use QCloudSDK\TIM\Template;
+use QCloudSDK\TIM\Voice;
 use QCloudSDK\Utils\Log;
 use QCloudSDKTests\TestCase;
 
@@ -89,6 +98,29 @@ class FacadeTest extends TestCase
         $app->setProviders(['foo', 'bar']);
 
         $this->assertSame(['foo', 'bar'], $app->getProviders());
+    }
+
+    public function testFacades()
+    {
+        $facade = new APIs([
+            Config::COMMON_SECRET_ID => 'foo',
+            Config::COMMON_SECRET_KEY => 'bar',
+            Config::COMMON_REGION => 'hz',
+            'tim' => [
+                \QCloudSDK\TIM\API::APP_ID => 'foo',
+                \QCloudSDK\TIM\API::APP_KEY => 'bar',
+            ]
+        ]);
+        $this->assertInstanceOf(API::class, $facade->cdn->api);
+        $this->assertInstanceOf(Refresh::class, $facade->cdn->refresh);
+        $this->assertInstanceOf(File::class, $facade->cos->file);
+        $this->assertInstanceOf(Directory::class, $facade->cos->dir);
+        $this->assertInstanceOf(Status::class, $facade->tim->status);
+        $this->assertInstanceOf(SMS::class, $facade->tim->sms);
+        $this->assertInstanceOf(Voice::class, $facade->tim->voice);
+        $this->assertInstanceOf(Signature::class, $facade->tim->signature);
+        $this->assertInstanceOf(Template::class, $facade->tim->template);
+        $this->assertInstanceOf(\QCloudSDK\WSS\API::class, $facade->wss);
     }
 
 }

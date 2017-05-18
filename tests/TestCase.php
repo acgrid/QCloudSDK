@@ -4,11 +4,21 @@
 namespace QCloudSDKTests;
 
 
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use QCloudSDK\Core\Http;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Http
+     */
+    protected $http;
+
+    protected function setUp()
+    {
+        $this->http = $this->getReflectedHttp();
+    }
 
     protected function createParam($key, $action)
     {
@@ -42,6 +52,27 @@ class TestCase extends \PHPUnit_Framework_TestCase
         }else{
             throw new \InvalidArgumentException('Not a client has assertion.');
         }
+    }
+
+    protected function assertMyRequestBody(\Closure $assertion)
+    {
+        $this->assertRequest($this->http, function(Request $request) use ($assertion){
+            $assertion(strval($request->getBody()));
+        });
+    }
+
+    protected function assertMyRequestUri(\Closure $assertion)
+    {
+        $this->assertRequest($this->http, function(Request $request) use ($assertion){
+            $assertion($request->getUri());
+        });
+    }
+
+    protected function assertMyRequestHeaders(\Closure $assertion)
+    {
+        $this->assertRequest($this->http, function(Request $request) use ($assertion){
+            $assertion($request->getHeaders());
+        });
     }
 
     /**

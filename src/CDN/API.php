@@ -34,7 +34,14 @@ class API extends AbstractAPI
     const STAT_CACHE = 'cache';
 
     const CONFIG_CACHE = 'cache';
+    const CONFIG_CACHE_MODE = 'cacheMode';
     const CONFIG_REFER = 'refer';
+    const CONFIG_FWD_HOST = 'fwdHost';
+    const CONFIG_FULL_URL = 'fullUrl';
+    const CONFIG_ORIGIN = 'origin';
+
+    const CACHE_MODE_SIMPLE = 'simple';
+    const CACHE_MODE_CUSTOM = 'custom';
 
     use GeneralSignatureTrait;
     use ActionTrait;
@@ -55,8 +62,8 @@ class API extends AbstractAPI
 
     protected function makeOriginParam($origin)
     {
-        if(is_string($origin)) return $origin;
-        if(is_array($origin)) return join(';', $origin);
+        if(is_string($origin)) return compact('origin');
+        if(is_array($origin)) return ['origin' => join(';', $origin)];
         throw new \InvalidArgumentException('Origin param must be either a domain or an array of IP[:Port].');
     }
 
@@ -132,6 +139,9 @@ class API extends AbstractAPI
         if(isset($projectId)) $params += compact('projectId');
         $this->ensureJsonParam($params, self::CONFIG_CACHE);
         $this->ensureJsonParam($params, self::CONFIG_REFER);
+        if(isset($params[static::CONFIG_FULL_URL]) && !is_string($params[static::CONFIG_FULL_URL])){
+            $params[static::CONFIG_FULL_URL] = $params[static::CONFIG_FULL_URL] ? 'on' : 'off';
+        }
         return $this->request($params);
     }
 
@@ -294,15 +304,28 @@ class API extends AbstractAPI
             $conditions[self::QUERY_END] = $this->makeDateTimeParam($conditions[self::QUERY_END]);
             $invalid = false;
         }
-        if(isset($conditions[self::QUERY_ID]) && is_numeric($id = &$conditions[self::QUERY_ID]) && $id > 0){
-            $id = intval($id);
-            $invalid = false;
+        if(isset($conditions[self::QUERY_ID])){
+            if(is_numeric($id = &$conditions[self::QUERY_ID]) && $id > 0){
+                $id = intval($id);
+                $invalid = false;
+            }else{
+                unset($conditions[self::QUERY_ID]);
+            }
         }
-        if(isset($conditions[self::QUERY_URL]) && filter_var($conditions[self::QUERY_URL], FILTER_VALIDATE_URL)){
-            $invalid = false;
+        if(isset($conditions[self::QUERY_URL])){
+            if(filter_var($conditions[self::QUERY_URL], FILTER_VALIDATE_URL)){
+                $invalid = false;
+            }else{
+                unset($conditions[self::QUERY_URL]);
+            }
         }
         if($invalid) throw new \InvalidArgumentException('Query condition must contain either date range or task ID.');
         return $this->request($this->createAction('GetCdnRefreshLog') + $conditions);
+    }
+
+    protected function assertUrl($url)
+    {
+        if(substr($url, 0, 4) !== 'http') throw new \InvalidArgumentException('You must specify scheme http or https in every URL.');
     }
 
     /**
@@ -312,9 +335,7 @@ class API extends AbstractAPI
      */
     public function refreshCdnUrl($urls)
     {
-        return $this->request($this->createAction(__FUNCTION__) + $this->makeArrayParam('dir', $urls, function($url){
-                if(substr($url, 0, 4) !== 'http') throw new \InvalidArgumentException('You must specify scheme http or https in every URL.');
-            }));
+        return $this->request($this->createAction(__FUNCTION__) + $this->makeArrayParam('urls', $urls, [$this, 'assertUrl']));
     }
 
     /**
@@ -324,8 +345,8 @@ class API extends AbstractAPI
      */
     public function refreshCdnDir($dirs)
     {
-        return $this->request($this->createAction(__FUNCTION__) + $this->makeArrayParam('dir', $dirs, function(&$dir){
-            if(substr($dir, 0, 4) !== 'http') throw new \InvalidArgumentException('You must specify scheme http or https in every URL.');
+        return $this->request($this->createAction(__FUNCTION__) + $this->makeArrayParam('dirs', $dirs, function(&$dir){
+            $this->assertUrl($dir);
             if($dir[-1] !== '/') $dir .= '/';
         }));
     }
@@ -343,7 +364,7 @@ class API extends AbstractAPI
         if(isset($startDate, $endDate)){
             $startDate = $this->makeDateTimeParam($startDate);
             $endDate = $this->makeDateTimeParam($endDate);
-            $params += compact('startDate', $endDate);
+            $params += compact('startDate', 'endDate');
         }
         return $this->request($params);
     }

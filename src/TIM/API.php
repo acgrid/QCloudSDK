@@ -5,7 +5,6 @@ namespace QCloudSDK\TIM;
 
 
 use QCloudSDK\Core\AbstractAPI;
-use QCloudSDK\Core\Exceptions\InvalidConfigException;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Nonce;
 
@@ -34,7 +33,6 @@ abstract class API extends AbstractAPI
         $this->appId = $this->getLocalConfig(static::APP_ID);
         $this->appKey = $this->getLocalConfig(static::APP_KEY);
         $this->endpoint = $this->getLocalConfig(Config::MODULE_COMMON_ENDPOINT, "yun.tim.qq.com/");
-        if(!isset($this->appId, $this->appKey)) throw new InvalidConfigException('TIM AppId or AppKey is not defined!');
     }
 
     protected function request($endpoint, string $random, array $params)
