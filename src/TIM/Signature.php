@@ -31,15 +31,15 @@ class Signature extends ServiceAPI
      * @param string $remark
      * @return \QCloudSDK\Utils\Collection
      */
-    public function edit(int $sign_id, string $text, string $remark)
+    public function mod(int $sign_id, string $text, string $remark)
     {
         $params = compact('sign_id', 'text', 'remark') + $this->signForGeneral($random);
         return $this->request('mod_sign', $random, $params);
     }
 
-    protected function makeTemplateIdList($idList)
+    protected function makeSignatureIdList($idList)
     {
-        return ['tpl_id' => $this->makeIntegerArray($idList)];
+        return ['sign_id' => $this->makeIntegerArray($idList)];
     }
 
     /**
@@ -49,7 +49,7 @@ class Signature extends ServiceAPI
      */
     public function delete($idList)
     {
-        $params = $this->makeTemplateIdList($idList) + $this->signForGeneral($random);
+        $params = $this->makeSignatureIdList($idList) + $this->signForGeneral($random);
         return $this->request('del_sign', $random, $params);
     }
 
@@ -60,7 +60,7 @@ class Signature extends ServiceAPI
      */
     public function get($idList)
     {
-        $params = $this->makeTemplateIdList($idList) + $this->signForGeneral($random);
+        $params = $this->makeSignatureIdList($idList) + $this->signForGeneral($random);
         return $this->request('get_sign', $random, $params);
     }
     
