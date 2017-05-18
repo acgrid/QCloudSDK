@@ -8,6 +8,6 @@ class Nonce
 {
     public static function make()
     {
-        return strval(random_int(10000, 100000));
+        return strval(random_int(10000, 99999));
     }
 }
