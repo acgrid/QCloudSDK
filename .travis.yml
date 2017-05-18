@@ -5,15 +5,14 @@ php:
   - 7.1
 
 before_script:
-  - composer self-update
-  - composer install --prefer-source --no-interaction --dev
+  - composer install --prefer-source --no-interaction
   - ./vendor/bin/phplint
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml
 
-script: phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
+script: vendor/bin/phpunit test/ --coverage-text --coverage-clover ./build/logs/clover.xml
 
 matrix:
   fast_finish: true
