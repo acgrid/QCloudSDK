@@ -5,6 +5,7 @@ namespace QCloudSDK\COS;
 
 
 use QCloudSDK\Core\AbstractAPI;
+use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Nonce;
 
 class API extends AbstractAPI
@@ -21,12 +22,9 @@ class API extends AbstractAPI
 
     protected $appRegion;
 
-    const API_URL = 'apiUrl';
-    const API_VERSION = 'apiVersion';
-    const APP_REGION = 'appRegion';
-    const APP_ID = 'appId';
-    const APP_SECRET_ID = 'appSecretId';
-    const APP_SECRET_KEY = 'appSecretKey';
+    const API_URL = 'ApiUrl';
+    const API_VERSION = 'ApiVersion';
+    const APP_ID = 'AppId';
     const BUCKET = 'bucket';
 
     // USED FOR BUILD REQUEST
@@ -53,10 +51,12 @@ class API extends AbstractAPI
 
     protected function init()
     {
+        // Common or COS-only
+        $this->appSecretId = $this->getLocalConfig(Config::COMMON_SECRET_ID);
+        $this->appSecretKey = $this->getLocalConfig(Config::COMMON_SECRET_KEY);
+        $this->appRegion = $this->getLocalConfig(Config::COMMON_REGION);
+        // Only for COS
         $this->appId = $this->getLocalConfig(static::APP_ID);
-        $this->appSecretId = $this->getLocalConfig(static::APP_SECRET_ID);
-        $this->appSecretKey = $this->getLocalConfig(static::APP_SECRET_KEY);
-        $this->appRegion = $this->getLocalConfig(static::APP_REGION);
         $this->bucket = $this->getLocalConfig(static::BUCKET);
         $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s-%s.cos%s.myqcloud.com/files/v%u', $this->bucket, $this->appId, $this->appRegion, $this->getLocalConfig(static::API_VERSION, 2)));
         $this->headers['Host'] = "{$this->appRegion}.file.myqcloud.com";

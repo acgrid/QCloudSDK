@@ -3,7 +3,6 @@
 namespace QCloudSDKTests\CDN;
 
 use QCloudSDK\CDN\Refresh;
-use QCloudSDK\Facade\Config;
 use QCloudSDKTests\MockClient;
 use QCloudSDKTests\TestCase;
 
@@ -46,10 +45,7 @@ class RefreshTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->refresh = new Refresh(new Config([
-            Config::COMMON_SECRET_ID => 'foo',
-            Config::COMMON_SECRET_KEY => 'bar',
-        ]), $this->http);
+        $this->refresh = new Refresh($this->configForTest(), $this->http);
     }
 
 }

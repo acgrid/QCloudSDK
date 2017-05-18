@@ -7,6 +7,7 @@ namespace QCloudSDKTests;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use QCloudSDK\Core\Http;
+use QCloudSDK\Facade\Config;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -18,6 +19,23 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->http = $this->getReflectedHttp();
+    }
+
+    protected function configForTest()
+    {
+        return new Config([
+            Config::COMMON_SECRET_ID => 'foo',
+            Config::COMMON_SECRET_KEY => 'bar',
+            'cos' => [
+                'appId' => '',
+                'bucket' => 'zzz',
+                Config::COMMON_REGION => 'gz',
+            ],
+            'tim' => [
+                'AppId' => '100032221',
+                'AppKey' => 'foobar',
+            ],
+        ]);
     }
 
     protected function createParam($key, $action)

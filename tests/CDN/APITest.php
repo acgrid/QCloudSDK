@@ -3,7 +3,6 @@
 namespace QCloudSDKTests\CDN;
 
 use QCloudSDK\CDN\API;
-use QCloudSDK\Facade\Config;
 use QCloudSDKTests\TestCase;
 
 class APITest extends TestCase
@@ -16,10 +15,7 @@ class APITest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->api = new API(new Config([
-            Config::COMMON_SECRET_ID => 'foo',
-            Config::COMMON_SECRET_KEY => 'bar',
-        ]), $this->http);
+        $this->api = new API($this->configForTest(), $this->http);
     }
 
     public function testHost()
