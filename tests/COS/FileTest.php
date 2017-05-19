@@ -85,7 +85,7 @@ class FileTest extends TestCase
         });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
-            $this->assertStringEndsWith('&f=/200001/newbucket/a.txt', base64_decode($headers['Authorization'][0]));
+            $this->assertStringEndsWith('&f=/200001/newbucket/a.txt', base64_decode($headers['Authorization'][0], true));
         });
         $this->assertMyRequestBody(function ($body) {
             $this->assertContains($this->makeFormData('op', 'move'), $body);
@@ -100,7 +100,7 @@ class FileTest extends TestCase
         });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
-            $this->assertStringEndsWith('&f=/200001/newbucket/b.txt', base64_decode($headers['Authorization'][0]));
+            $this->assertStringEndsWith('&f=/200001/newbucket/b.txt', base64_decode($headers['Authorization'][0], true));
         });
         $this->assertMyRequestBody(function ($body) {
             $this->assertContains($this->makeFormData('op', 'copy'), $body);
@@ -126,7 +126,6 @@ class FileTest extends TestCase
             $this->assertSame(File::AUTH_W_PRIVATE_R_PUBLIC, $json[File::ATTR_AUTHORITY]);
             $this->assertSame($headers, $json[File::ATTR_HEADERS]);
         });
-
     }
 
     public function testDelete()
@@ -135,7 +134,7 @@ class FileTest extends TestCase
         $this->assertMyRequestMethod('POST');
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
-            $this->assertStringEndsWith('&f=/200001/newbucket/foo', base64_decode($headers['Authorization'][0]));
+            $this->assertStringEndsWith('&f=/200001/newbucket/foo', base64_decode($headers['Authorization'][0], true));
         });
         $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('/foo', $uri->getPath());
@@ -162,5 +161,4 @@ class FileTest extends TestCase
             $this->assertArrayHasKey('Authorization', $headers);
         });
     }
-
 }

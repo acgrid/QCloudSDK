@@ -23,7 +23,7 @@ class StatusTest extends TestCase
     {
         $time = time();
         $this->status->queryDelivery()->pullSingleStatus('86', '13712345678', $date = date('Y-m-d H:i:s', $time), $date, 5);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('pullstatus4mobile', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) use ($time) {
@@ -40,7 +40,7 @@ class StatusTest extends TestCase
     {
         $time = time();
         $this->status->queryReply()->pullMultiStatus(20);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('pullstatus', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) use ($time) {
@@ -54,7 +54,7 @@ class StatusTest extends TestCase
     {
         $time = time();
         $this->status->pullSendStatus($time, $time);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('pullsendstatus', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) use ($time) {
@@ -67,7 +67,7 @@ class StatusTest extends TestCase
     {
         $time = time();
         $this->status->pullCallbackStatus($time, $time);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('pullcallbackstatus', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) use ($time) {
@@ -75,5 +75,4 @@ class StatusTest extends TestCase
             $this->assertSame(intval(date('YmdH', $time)), $json['end_date']);
         });
     }
-
 }

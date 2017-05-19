@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\CDN;
 
-
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\ActionTrait;
 use QCloudSDK\Core\ArrayParamTrait;
@@ -58,14 +57,20 @@ class API extends AbstractAPI
 
     protected function makePeriodParam(int $period)
     {
-        if($period < 5) return [];
+        if ($period < 5) {
+            return [];
+        }
         return compact('period');
     }
 
     protected function makeOriginParam($origin)
     {
-        if(is_string($origin)) return compact('origin');
-        if(is_array($origin)) return ['origin' => join(';', $origin)];
+        if (is_string($origin)) {
+            return compact('origin');
+        }
+        if (is_array($origin)) {
+            return ['origin' => join(';', $origin)];
+        }
         throw new \InvalidArgumentException('Origin param must be either a domain or an array of IP[:Port].');
     }
 
@@ -81,7 +86,9 @@ class API extends AbstractAPI
     {
         $params = $this->createAction(__FUNCTION__);
         $params += compact('host', 'projectId', 'type');
-        if(isset($origin)) $params += $this->makeOriginParam($origin);
+        if (isset($origin)) {
+            $params += $this->makeOriginParam($origin);
+        }
         return $this->request($params);
     }
 
@@ -138,7 +145,9 @@ class API extends AbstractAPI
     public function updateCdnConfig(int $hostId, int $projectId, array $params)
     {
         $params += $this->createAction(__FUNCTION__) + compact('hostId');
-        if(isset($projectId)) $params += compact('projectId');
+        if (isset($projectId)) {
+            $params += compact('projectId');
+        }
         $this->ensureJsonParam($params, static::CONFIG_CACHE);
         $this->ensureJsonParam($params, static::CONFIG_REFER);
         $this->ensureOnOffParam($params, static::CONFIG_FULL_URL);
@@ -198,8 +207,12 @@ class API extends AbstractAPI
     public function describeCdnHosts(int $offset = null, int $limit = null)
     {
         $params = $this->createAction(__FUNCTION__);
-        if(isset($offset)) $params += compact('offset');
-        if(isset($limit)) $params += compact('limit');
+        if (isset($offset)) {
+            $params += compact('offset');
+        }
+        if (isset($limit)) {
+            $params += compact('limit');
+        }
         return $this->request($params);
     }
 
@@ -218,8 +231,12 @@ class API extends AbstractAPI
         $params[self::QUERY_START] = $this->makeDateParam($startDate);
         $params[self::QUERY_END] = $this->makeDateParam($endDate);
         $params += $this->makeArrayParam(self::QUERY_PROJECT, $projects);
-        if(isset($hosts)) $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
-        if(isset($period)) $params += $this->makePeriodParam($period);
+        if (isset($hosts)) {
+            $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
+        }
+        if (isset($period)) {
+            $params += $this->makePeriodParam($period);
+        }
         return $this->request($params);
     }
 
@@ -246,8 +263,12 @@ class API extends AbstractAPI
         $params[self::QUERY_END] = $this->makeDateParam($endDate);
         $params[self::QUERY_TYPE] = $statType;
         $params += $this->makeArrayParam(self::QUERY_PROJECT, $projects);
-        if(isset($hosts)) $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
-        if(isset($period)) $params += $this->makePeriodParam($period);
+        if (isset($hosts)) {
+            $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
+        }
+        if (isset($period)) {
+            $params += $this->makePeriodParam($period);
+        }
         return $this->request($params);
     }
 
@@ -267,7 +288,9 @@ class API extends AbstractAPI
         $params[self::QUERY_END] = $this->makeDateParam($endDate);
         $params[self::QUERY_TYPE] = $statType;
         $params += $this->makeArrayParam(self::QUERY_PROJECT, $projects);
-        if(isset($hosts)) $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
+        if (isset($hosts)) {
+            $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
+        }
         return $this->request($params);
     }
 
@@ -287,7 +310,9 @@ class API extends AbstractAPI
         $params[self::QUERY_END] = $this->makeDateParam($endDate);
         $params[self::QUERY_TYPE] = $statType;
         $params += $this->makeArrayParam(self::QUERY_PROJECT, $projects);
-        if(isset($hosts)) $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
+        if (isset($hosts)) {
+            $params += $this->makeArrayParam(self::QUERY_HOST, $hosts);
+        }
         return $this->request($params);
     }
 
@@ -299,33 +324,37 @@ class API extends AbstractAPI
     public function getCdnRefreshLog(array $conditions)
     {
         $invalid = true;
-        if(isset($conditions[self::QUERY_START], $conditions[self::QUERY_END])){
+        if (isset($conditions[self::QUERY_START], $conditions[self::QUERY_END])) {
             $conditions[self::QUERY_START] = $this->makeDateTimeParam($conditions[self::QUERY_START]);
             $conditions[self::QUERY_END] = $this->makeDateTimeParam($conditions[self::QUERY_END]);
             $invalid = false;
         }
-        if(isset($conditions[self::QUERY_ID])){
-            if(is_numeric($id = &$conditions[self::QUERY_ID]) && $id > 0){
+        if (isset($conditions[self::QUERY_ID])) {
+            if (is_numeric($id = &$conditions[self::QUERY_ID]) && $id > 0) {
                 $id = intval($id);
                 $invalid = false;
-            }else{
+            } else {
                 unset($conditions[self::QUERY_ID]);
             }
         }
-        if(isset($conditions[self::QUERY_URL])){
-            if(filter_var($conditions[self::QUERY_URL], FILTER_VALIDATE_URL)){
+        if (isset($conditions[self::QUERY_URL])) {
+            if (filter_var($conditions[self::QUERY_URL], FILTER_VALIDATE_URL)) {
                 $invalid = false;
-            }else{
+            } else {
                 unset($conditions[self::QUERY_URL]);
             }
         }
-        if($invalid) throw new \InvalidArgumentException('Query condition must contain either date range or task ID.');
+        if ($invalid) {
+            throw new \InvalidArgumentException('Query condition must contain either date range or task ID.');
+        }
         return $this->request($this->createAction('GetCdnRefreshLog') + $conditions);
     }
 
     protected function assertUrl($url)
     {
-        if(substr($url, 0, 4) !== 'http') throw new \InvalidArgumentException('You must specify scheme http or https in every URL.');
+        if (substr($url, 0, 4) !== 'http') {
+            throw new \InvalidArgumentException('You must specify scheme http or https in every URL.');
+        }
     }
 
     /**
@@ -345,9 +374,11 @@ class API extends AbstractAPI
      */
     public function refreshCdnDir($dirs)
     {
-        return $this->request($this->createAction(__FUNCTION__) + $this->makeArrayParam('dirs', $dirs, function(&$dir){
+        return $this->request($this->createAction(__FUNCTION__) + $this->makeArrayParam('dirs', $dirs, function (&$dir) {
             $this->assertUrl($dir);
-            if(substr($dir, -1) !== '/') $dir .= '/'; // TODO $dir[-1] for PHP >=7.1
+            if (substr($dir, -1) !== '/') {
+                $dir .= '/';
+            } // TODO $dir[-1] for PHP >=7.1
         }));
     }
 
@@ -361,12 +392,11 @@ class API extends AbstractAPI
     public function getCdnLogList(string $host, $startDate = null, $endDate = null)
     {
         $params = $this->createAction(__FUNCTION__) + compact('host');
-        if(isset($startDate, $endDate)){
+        if (isset($startDate, $endDate)) {
             $startDate = $this->makeDateTimeParam($startDate);
             $endDate = $this->makeDateTimeParam($endDate);
             $params += compact('startDate', 'endDate');
         }
         return $this->request($params);
     }
-
 }

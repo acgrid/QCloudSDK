@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\COS;
 
-
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Collection;
@@ -98,7 +97,7 @@ class API extends AbstractAPI
      */
     public function setBucket(string $bucket)
     {
-        if($bucket !== $this->bucket){
+        if ($bucket !== $this->bucket) {
             $this->bucket = $bucket;
             $this->setApiUrl();
         }
@@ -123,7 +122,9 @@ class API extends AbstractAPI
      */
     protected function doSign(int $expire, string $file = '', int $time = null, string $rand = null)
     {
-        if(!isset($time)) $time = time();
+        if (!isset($time)) {
+            $time = time();
+        }
         $params = [
             'a' => $this->appId,
             'b' => $this->bucket,
@@ -133,7 +134,7 @@ class API extends AbstractAPI
             'r' => $rand ?? Nonce::make(),
             'f' => join('/', array_map('urlencode', explode('/', $file)))
         ];
-        $toSignature = join('&', array_map(function($k, $v){
+        $toSignature = join('&', array_map(function ($k, $v) {
             return "$k=$v";
         }, array_keys($params), array_values($params)));
         return base64_encode(hash_hmac('SHA1', $toSignature, $this->appSecretKey, true) . $toSignature);
@@ -177,7 +178,7 @@ class API extends AbstractAPI
      */
     protected function setParams(array $params): API
     {
-        $this->params = array_filter($params, function($value){
+        $this->params = array_filter($params, function ($value) {
             return $value !== null;
         });
         return $this;
@@ -212,23 +213,24 @@ class API extends AbstractAPI
     protected function request(string $method, string $paramOption)
     {
         $params = $this->params ?? [];
-        if($paramOption !== 'multipart') $params += ['op' => $this->op];
+        if ($paramOption !== 'multipart') {
+            $params += ['op' => $this->op];
+        }
         return $this->parseJSON('request', $this->buildUrl(), $method, [$paramOption => $params, 'headers' => $this->headers->all()]);
     }
 
     public function getQueryRequest()
     {
-        return $this->request('GET','query');
+        return $this->request('GET', 'query');
     }
 
     public function postJsonRequest()
     {
-        return $this->request('POST','json');
+        return $this->request('POST', 'json');
     }
 
     public function postFormDataRequest()
     {
-        return $this->request('POST','multipart');
+        return $this->request('POST', 'multipart');
     }
-
 }

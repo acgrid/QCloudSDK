@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\Core;
 
-
 trait OnOffParamTrait
 {
     protected function makeOnOffParam($value)

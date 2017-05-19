@@ -23,7 +23,6 @@ use QCloudSDKTests\TestCase;
 
 class FacadeTest extends TestCase
 {
-
     public function testConfig()
     {
         $facade = new APIs([Config::COMMON_SECRET_ID => 'abcdefghijklmn', Config::COMMON_SECRET_KEY => 'foo']);
@@ -53,7 +52,7 @@ class FacadeTest extends TestCase
         Log::setLogger($logger);
         $this->assertSame($logger, Log::getLogger());
         new APIs(['debug' => true, Config::COMMON_SECRET_ID => 'abcdefghijklmn', Config::COMMON_SECRET_KEY => 'foo123456789', 'foo' => ['AppKey' => '87743144531']]);
-        $handler->hasRecordThatPasses(function($record){
+        $handler->hasRecordThatPasses(function ($record) {
             $this->assertSame('Current config:', $record['message']);
             $this->assertSame(['debug' => true, Config::COMMON_SECRET_ID => '***jklmn', Config::COMMON_SECRET_KEY => '***56789', 'foo' => ['AppKey' => '***44531']], $record['context']);
         }, Logger::DEBUG);
@@ -122,5 +121,4 @@ class FacadeTest extends TestCase
         $this->assertInstanceOf(Template::class, $facade->tim->template);
         $this->assertInstanceOf(\QCloudSDK\WSS\API::class, $facade->wss);
     }
-
 }

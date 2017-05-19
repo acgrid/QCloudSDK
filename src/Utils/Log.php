@@ -101,5 +101,4 @@ class Log
     {
         return call_user_func_array([self::getLogger(), $method], $args);
     }
-
 }

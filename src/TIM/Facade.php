@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\TIM;
 
-
 use QCloudSDK\Core\AbstractFacade;
 
 /**
@@ -17,7 +16,6 @@ use QCloudSDK\Core\AbstractFacade;
  */
 class Facade extends AbstractFacade
 {
-
     protected $map = [
         'sms' => SMS::class,
         'voice' => Voice::class,
@@ -25,5 +23,4 @@ class Facade extends AbstractFacade
         'signature' => Signature::class,
         'status' => Status::class,
     ];
-
 }

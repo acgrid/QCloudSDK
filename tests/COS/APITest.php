@@ -25,5 +25,4 @@ class APITest extends TestCase
         $this->assertSame($this->api, $this->api->setBucket('mybucket'));
         $this->assertInstanceOf(Collection::class, $this->api->getHeaders());
     }
-
 }

@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\TIM;
 
-
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Nonce;
@@ -42,18 +41,20 @@ abstract class API extends AbstractAPI
 
     public function signForMobile($mobiles, &$random, int $time = null)
     {
-        if(is_array($mobiles)){
-            if(isset($mobiles['mobile'])){
+        if (is_array($mobiles)) {
+            if (isset($mobiles['mobile'])) {
                 $mobiles = $mobiles['mobile'];
-            }else{
-                $mobiles = join(',', array_map(function($item){
+            } else {
+                $mobiles = join(',', array_map(function ($item) {
                     return $item['mobile'];
                 }, $mobiles));
             }
         }
         $params = [];
         $params['time'] = $time ?? time();
-        if(!isset($random)) $random = Nonce::make();
+        if (!isset($random)) {
+            $random = Nonce::make();
+        }
         $params['sig'] = hash("sha256", "appkey={$this->appKey}&random=$random&time=$time&mobile=$mobiles"); // https://github.com/qcloudsms/qcloudsms/blob/master/demo/php/SmsTools.php#L12
         return $params;
     }
@@ -62,7 +63,9 @@ abstract class API extends AbstractAPI
     {
         $params = [];
         $params['time'] = $time ?? time();
-        if(!isset($random)) $random = Nonce::make();
+        if (!isset($random)) {
+            $random = Nonce::make();
+        }
         $params['sig'] = hash("sha256", "appkey={$this->appKey}&random=$random&time=$time");
         return $params;
     }
@@ -71,5 +74,4 @@ abstract class API extends AbstractAPI
     {
         return compact('nationcode', 'mobile');
     }
-
 }

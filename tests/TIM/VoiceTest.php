@@ -24,7 +24,7 @@ class VoiceTest extends TestCase
     {
         $this->setUp();
         $this->voice->setExt('foo')->setPlayTimes(1)->sendVerifyCode('852', '98761234', '9999');
-        $this->assertMyRequestUri(function(Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('sendvoice', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -41,7 +41,7 @@ class VoiceTest extends TestCase
     {
         $this->setUp();
         $this->voice->sendPrompt('852', '12345678', 'Hello World');
-        $this->assertMyRequestUri(function(Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('sendvoiceprompt', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -52,6 +52,5 @@ class VoiceTest extends TestCase
             $this->assertArrayNotHasKey('playtimes', $json);
             $this->assertSame('', $json['ext']);
         });
-
     }
 }

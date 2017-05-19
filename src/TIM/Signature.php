@@ -3,13 +3,10 @@
 
 namespace QCloudSDK\TIM;
 
-
-
 use QCloudSDK\Core\IntegerArrayTrait;
 
 class Signature extends ServiceAPI
 {
-
     use IntegerArrayTrait;
 
     /**
@@ -63,5 +60,4 @@ class Signature extends ServiceAPI
         $params = $this->makeSignatureIdList($idList) + $this->signForGeneral($random);
         return $this->request('get_sign', $random, $params);
     }
-    
 }

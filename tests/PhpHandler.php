@@ -3,7 +3,6 @@
 
 namespace QCloudSDKTests;
 
-
 use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;
@@ -26,7 +25,6 @@ class PhpHandler
 
     public function __invoke(RequestInterface $request, array $options)
     {
-
         if (isset($options['delay'])) {
             usleep($options['delay'] * 1000);
         }
@@ -97,5 +95,4 @@ class PhpHandler
             call_user_func($options['on_stats'], $stats);
         }
     }
-
 }

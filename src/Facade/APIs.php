@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\Facade;
 
-
 use Pimple\Container;
 use QCloudSDK\Core\Http;
 use QCloudSDK\Utils\Log;
@@ -33,7 +32,7 @@ class APIs extends Container
         $this['config'] = $config = new Config($configData);
         $this->registerProviders();
         Http::setDefaultOptions($config->get(Config::GUZZLE_DEFAULTS, static::GUZZLE_DEFAULTS));
-        if($config->get('debug', false)){
+        if ($config->get('debug', false)) {
             $masked = $configData;
             $this->maskConfig($masked);
             Log::debug('Current config:', $masked);
@@ -42,9 +41,13 @@ class APIs extends Container
 
     protected function maskConfig(array &$config)
     {
-        foreach($config as $key => $value){
-            if(is_array($value)) $this->maskConfig($config[$key]);
-            if(stripos($key, 'key') !== false || stripos($key, 'id') !== false) $config[$key] = '***'.substr($config[$key], -5);
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $this->maskConfig($config[$key]);
+            }
+            if (stripos($key, 'key') !== false || stripos($key, 'id') !== false) {
+                $config[$key] = '***'.substr($config[$key], -5);
+            }
         }
     }
 
@@ -118,5 +121,4 @@ class APIs extends Container
             $this->register(new $provider());
         }
     }
-
 }

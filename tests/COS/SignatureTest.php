@@ -2,7 +2,6 @@
 
 namespace QCloudSDKTests\COS;
 
-
 use QCloudSDK\COS\API;
 use QCloudSDKTests\TestCase;
 
@@ -35,9 +34,8 @@ class SignatureTest extends TestCase
 
     public function testRandom()
     {
-        $sign = base64_decode($this->api->signMultiEffect());
+        $sign = base64_decode($this->api->signMultiEffect(), true);
         $this->assertContains('&t=' . intdiv(time(), 100), $sign);
         $this->assertRegExp('/r=\d{5}/', $sign);
     }
-
 }

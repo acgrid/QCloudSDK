@@ -22,7 +22,7 @@ class SignatureTest extends TestCase
     public function testAdd()
     {
         $this->signature->add('foo', 'bar');
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('add_sign', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -34,7 +34,7 @@ class SignatureTest extends TestCase
     public function testEdit()
     {
         $this->signature->mod(233, 'foo', 'bar');
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('mod_sign', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -47,7 +47,7 @@ class SignatureTest extends TestCase
     public function testDelete()
     {
         $this->signature->delete([22, 33]);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('del_sign', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -58,12 +58,11 @@ class SignatureTest extends TestCase
     public function testGet()
     {
         $this->signature->get(486);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('get_sign', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
             $this->assertSame(486, $json['sign_id']);
         });
     }
-
 }

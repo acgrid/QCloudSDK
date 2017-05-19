@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\TIM;
 
-
 class SMS extends API
 {
     const SMS_ENDPOINT = 'SmsEndpoint';
@@ -106,14 +105,16 @@ class SMS extends API
     protected function prepareContent()
     {
         $params = [];
-        if(isset($this->sign)) $params['sign'] = $this->sign;
-        if(isset($this->template)){
+        if (isset($this->sign)) {
+            $params['sign'] = $this->sign;
+        }
+        if (isset($this->template)) {
             $params['tpl_id'] = $this->template;
             $params['params'] = $this->templateVariables;
-        }elseif(isset($this->literalType)){
+        } elseif (isset($this->literalType)) {
             $params['type'] = $this->literalType;
             $params['msg'] = $this->literalMessage;
-        }else{
+        } else {
             throw new \LogicException('Cannot send SMS for message is undefined.');
         }
         $params['extend'] = $this->extend ?? '';
@@ -135,9 +136,13 @@ class SMS extends API
      */
     public function sendMulti(array $domesticNumbers)
     {
-        if(empty($domesticNumbers)) return null;
-        if(count($domesticNumbers) > static::MAX_MULTI) throw new \InvalidArgumentException('Reached the limit of receivers in once multiple sending.');
-        return $this->send('sendmultisms2', array_map(function($domesticNumber){
+        if (empty($domesticNumbers)) {
+            return null;
+        }
+        if (count($domesticNumbers) > static::MAX_MULTI) {
+            throw new \InvalidArgumentException('Reached the limit of receivers in once multiple sending.');
+        }
+        return $this->send('sendmultisms2', array_map(function ($domesticNumber) {
             return $this->makeMobile(static::DOMESTIC_CODE, $domesticNumber);
         }, $domesticNumbers));
     }
@@ -152,13 +157,12 @@ class SMS extends API
      */
     public function sendTo(string $nationCodeOrInternationalNumberOrDomesticNumber, string $localNumber = null)
     {
-        if(isset($localNumber)){
+        if (isset($localNumber)) {
             return $this->send('sendsms', $this->makeMobile($nationCodeOrInternationalNumberOrDomesticNumber, $localNumber));
-        }elseif($nationCodeOrInternationalNumberOrDomesticNumber[0] === '+'){
+        } elseif ($nationCodeOrInternationalNumberOrDomesticNumber[0] === '+') {
             return $this->send('sendisms', $nationCodeOrInternationalNumberOrDomesticNumber);
-        }else{
+        } else {
             return $this->send('sendsms', $this->makeMobile(static::DOMESTIC_CODE, $nationCodeOrInternationalNumberOrDomesticNumber));
         }
     }
-
 }

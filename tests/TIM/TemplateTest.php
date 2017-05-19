@@ -23,7 +23,7 @@ class TemplateTest extends TestCase
     public function testAdd()
     {
         $this->template->addNormal('foo', 'bar', 'baz');
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('add_template', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -42,7 +42,7 @@ class TemplateTest extends TestCase
     public function testEdit()
     {
         $this->template->mod(789, SMS::TYPE_PROMOTION, 'foo', 'bar', 'poi');
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('mod_template', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -57,7 +57,7 @@ class TemplateTest extends TestCase
     public function testDelete()
     {
         $this->template->delete([22, 33]);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('del_template', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -68,7 +68,7 @@ class TemplateTest extends TestCase
     public function testGet()
     {
         $this->template->getSpecified([7, 8, 9]);
-        $this->assertMyRequestUri(function (Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('get_template', $uri->getPath());
         });
         $this->assertMyRequestJson(function ($json) {
@@ -83,5 +83,4 @@ class TemplateTest extends TestCase
             $this->assertSame(10, $json['tpl_page']['max']);
         });
     }
-
 }

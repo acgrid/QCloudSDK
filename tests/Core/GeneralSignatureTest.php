@@ -2,7 +2,6 @@
 
 namespace QCloudSDKTests\Core;
 
-
 use QCloudSDK\Core\ActionTrait;
 use QCloudSDK\Core\GeneralSignatureTrait;
 use QCloudSDK\Facade\Config;
@@ -45,5 +44,4 @@ class GeneralSignatureTest extends TestCase
         $this->assertEquals(time(), $signed['Timestamp'], 'Timestamp is not generated as now.', 1);
         $this->assertRegExp('/\d{5}/', $signed['Nonce']);
     }
-
 }
