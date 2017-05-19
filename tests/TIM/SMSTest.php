@@ -23,10 +23,11 @@ class SMSTest extends TestCase
     {
         $strMobile = '13788888888';
         $random = '7226249334';
-        $time = '1457336869';
-        $this->assertSame(hash("sha256", "appkey=dffdfd6029698a5fdf4&random=$random&time=$time&mobile=$strMobile"), $this->sms->signForMobile($strMobile, $random, $time)['sig']);
-        $this->assertSame(hash("sha256", "appkey=dffdfd6029698a5fdf4&random=$random&time=$time&mobile=13712345678,13987654321"), $this->sms->signForMobile([['mobile' => '13712345678'], ['mobile' => '13987654321']], $random, $time)['sig']);
-        $this->assertSame(hash("sha256", "appkey=dffdfd6029698a5fdf4&random=$random&time=$time"), $this->sms->signForGeneral($random, $time)['sig']);
+        $time = time();
+        $common = "appkey=dffdfd6029698a5fdf4&random=$random&time=$time";
+        $this->assertSame(hash("sha256", "$common&mobile=$strMobile"), $this->sms->signForMobile($strMobile, $random)['sig']);
+        $this->assertSame(hash("sha256", "$common&mobile=13712345678,13987654321"), $this->sms->signForMobile([['mobile' => '13712345678'], ['mobile' => '13987654321']], $random)['sig']);
+        $this->assertSame(hash("sha256", $common), $this->sms->signForGeneral($random)['sig']);
 
         $params = $this->sms->signForMobile('13012345789', $altRandom);
         $this->assertRegExp('/\d{5}/', $altRandom);

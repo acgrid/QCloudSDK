@@ -51,20 +51,21 @@ abstract class API extends AbstractAPI
                 }, $mobiles));
             }
         }
-        $params = [];
-        $params['time'] = $time ?? time();
-        if(!isset($random)) $random = Nonce::make();
-        $params['sig'] = hash("sha256", "appkey={$this->appKey}&random=$random&time=$time&mobile=$mobiles"); // https://github.com/qcloudsms/qcloudsms/blob/master/demo/php/SmsTools.php#L12
-        return $params;
+        $sig = hash("sha256", $this->commonSignature($random, $time). "&mobile=$mobiles"); // https://github.com/qcloudsms/qcloudsms/blob/master/demo/php/SmsTools.php#L12
+        return compact('time', 'sig');
     }
 
     public function signForGeneral(&$random, int $time = null)
     {
-        $params = [];
-        $params['time'] = $time ?? time();
+        $sig = hash("sha256", $this->commonSignature($random, $time));
+        return compact('time', 'sig');
+    }
+
+    protected function commonSignature(&$random, int &$time = null)
+    {
         if(!isset($random)) $random = Nonce::make();
-        $params['sig'] = hash("sha256", "appkey={$this->appKey}&random=$random&time=$time");
-        return $params;
+        if(!isset($time)) $time = time();
+        return "appkey={$this->appKey}&random=$random&time=$time";
     }
 
     protected function makeMobile($nationcode, $mobile)
