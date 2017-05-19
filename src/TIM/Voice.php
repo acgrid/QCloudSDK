@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\TIM;
 
-
 class Voice extends API
 {
     const VOICE_ENDPOINT = 'VoiceEndpoint';
@@ -31,7 +30,9 @@ class Voice extends API
      */
     public function setPlayTimes(int $playTimes): Voice
     {
-        if($playTimes > 0) $this->playTimes = $playTimes;
+        if ($playTimes > 0) {
+            $this->playTimes = $playTimes;
+        }
         return $this;
     }
 
@@ -48,7 +49,9 @@ class Voice extends API
     protected function prepareContent()
     {
         $params = [];
-        if(isset($this->playTimes)) $params['playtimes'] = $this->playTimes;
+        if (isset($this->playTimes)) {
+            $params['playtimes'] = $this->playTimes;
+        }
         $params['ext'] = $this->ext ?? '';
         return $params;
     }
@@ -79,5 +82,4 @@ class Voice extends API
         $params = ['tel' => $this->makeMobile($nationCode, $mobile)] + compact('promptfile', 'prompttype') + $this->prepareContent() + $this->signForMobile($mobile, $random);
         return $this->request('sendvoiceprompt', $random, $params);
     }
-
 }

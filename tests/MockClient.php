@@ -3,7 +3,6 @@
 
 namespace QCloudSDKTests;
 
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -66,5 +65,4 @@ class MockClient
     {
         return new Client(['handler' => HandlerStack::create($mockHandler)]);
     }
-
 }

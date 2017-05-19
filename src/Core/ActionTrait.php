@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\Core;
 
-
 trait ActionTrait
 {
     abstract protected function createParam($key, $action);
@@ -12,5 +11,4 @@ trait ActionTrait
     {
         return $this->createParam('Action', ucfirst($action));
     }
-
 }

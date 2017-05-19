@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\CDN;
 
-
 use QCloudSDK\Utils\Collection;
 
 class Refresh extends API
@@ -42,5 +41,4 @@ class Refresh extends API
     {
         return $this->getTaskId($this->refreshCdnDir($dirs));
     }
-
 }

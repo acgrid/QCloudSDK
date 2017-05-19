@@ -22,11 +22,11 @@
 
 namespace QCloudSDK\Core;
 
-use QCloudSDK\Core\Exceptions\HttpException;
-use QCloudSDK\Utils\Log;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\HandlerStack;
 use Psr\Http\Message\ResponseInterface;
+use QCloudSDK\Core\Exceptions\HttpException;
+use QCloudSDK\Utils\Log;
 
 /**
  * Class Http.
@@ -113,7 +113,9 @@ class Http
     public function post($url, $data = [], array $query = [])
     {
         $options = [is_array($data) ? 'form_params' : 'body' => $data];
-        if(count($query)) $options += compact('query');
+        if (count($query)) {
+            $options += compact('query');
+        }
         return $this->request($url, 'POST', $options);
     }
 
@@ -232,7 +234,9 @@ class Http
     {
         $method = strtoupper($method);
 
-        if(substr($url, 0, 4) !== 'http') $url = "https://$url";
+        if (substr($url, 0, 4) !== 'http') {
+            $url = "https://$url";
+        }
 
         $options = array_merge(self::$defaults, $options);
 
@@ -261,14 +265,15 @@ class Http
      */
     public function parseJSON($body)
     {
-
         if ($body instanceof ResponseInterface) {
             $body = $body->getBody()->__toString();
         }
 
         Log::debug('API response raw:', compact('body'));
 
-        if (empty($body)) throw new HttpException('Empty response but JSON expected.');
+        if (empty($body)) {
+            throw new HttpException('Empty response but JSON expected.');
+        }
 
         $contents = json_decode($body, true);
 
@@ -290,7 +295,9 @@ class Http
     {
         $stack = $this->getClient()->getConfig('handler');
 
-        if(!isset($stack)) $stack = HandlerStack::create();
+        if (!isset($stack)) {
+            $stack = HandlerStack::create();
+        }
 
         foreach ($this->middlewares as $middleware) {
             $stack->push($middleware);

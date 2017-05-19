@@ -3,7 +3,6 @@
 
 namespace QCloudSDKTests;
 
-
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use QCloudSDK\Core\Http;
@@ -58,7 +57,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     public function getReflectedHttpWithResponse($body = null, $status = 200, array $headers = ['X-Foo' => 'Bar'], string $protocol = '1.1')
     {
         $http = new Http();
-        $http->setClient(new ReflectClient(function() use ($body, $status, $headers, $protocol) {
+        $http->setClient(new ReflectClient(function () use ($body, $status, $headers, $protocol) {
             return new Response($status, $headers, $body, $protocol);
         }));
         return $http;
@@ -67,23 +66,23 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function assertRequest(Http $http, \Closure $assertion)
     {
         $client = $http->getClient();
-        if(method_exists($client, 'assertRequest')){
+        if (method_exists($client, 'assertRequest')) {
             $client->assertRequest($assertion);
-        }else{
+        } else {
             throw new \InvalidArgumentException('Not a client has assertion.');
         }
     }
 
     protected function assertMyRequestMethod(string $method)
     {
-        $this->assertRequest($this->http, function(Request $request) use ($method){
+        $this->assertRequest($this->http, function (Request $request) use ($method) {
             $this->assertSame($method, $request->getMethod());
         });
     }
 
     protected function assertMyRequestBody(\Closure $assertion)
     {
-        $this->assertRequest($this->http, function(Request $request) use ($assertion){
+        $this->assertRequest($this->http, function (Request $request) use ($assertion) {
             $assertion(strval($request->getBody()));
         });
     }
@@ -97,14 +96,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function assertMyRequestUri(\Closure $assertion)
     {
-        $this->assertRequest($this->http, function(Request $request) use ($assertion){
+        $this->assertRequest($this->http, function (Request $request) use ($assertion) {
             $assertion($request->getUri());
         });
     }
 
     protected function assertMyRequestHeaders(\Closure $assertion)
     {
-        $this->assertRequest($this->http, function(Request $request) use ($assertion){
+        $this->assertRequest($this->http, function (Request $request) use ($assertion) {
             $assertion($request->getHeaders());
         });
     }

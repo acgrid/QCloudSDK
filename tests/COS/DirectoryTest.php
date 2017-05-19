@@ -26,7 +26,7 @@ class DirectoryTest extends TestCase
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
             $this->assertArrayHasKey('Host', $headers);
-            $this->assertContains('a=200001&b=newbucket', $signature = base64_decode($headers['Authorization'][0]));
+            $this->assertContains('a=200001&b=newbucket', $signature = base64_decode($headers['Authorization'][0], true));
             $this->assertStringEndsWith('f=', $signature);
             $this->assertSame('gz.file.myqcloud.com', $headers['Host'][0]);
         });
@@ -77,7 +77,7 @@ class DirectoryTest extends TestCase
         $this->assertMyRequestMethod('POST');
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
-            $this->assertStringEndsWith('&f=/200001/newbucket/poi/', base64_decode($headers['Authorization'][0]));
+            $this->assertStringEndsWith('&f=/200001/newbucket/poi/', base64_decode($headers['Authorization'][0], true));
         });
         $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertStringEndsWith('/poi/', $uri->getPath());
@@ -86,5 +86,4 @@ class DirectoryTest extends TestCase
             $this->assertSame('delete', $json['op']);
         });
     }
-
 }

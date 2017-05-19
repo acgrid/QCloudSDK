@@ -2,7 +2,6 @@
 
 namespace QCloudSDKTests\WSS;
 
-
 use QCloudSDK\WSS\API;
 use QCloudSDKTests\TestCase;
 
@@ -22,7 +21,7 @@ class WssTest extends TestCase
     public function testUpload()
     {
         $this->api->uploadServerCert('foo', 'bar', 'cert');
-        $this->assertMyRequestBody(function($params){
+        $this->assertMyRequestBody(function ($params) {
             $this->assertContains('cert=foo', $params);
             $this->assertContains('certType=SVR', $params);
             $this->assertContains('key=bar', $params);
@@ -30,7 +29,7 @@ class WssTest extends TestCase
         });
 
         $response = $this->api->uploadClientCert('foo');
-        $this->assertMyRequestBody(function($params){
+        $this->assertMyRequestBody(function ($params) {
             $this->assertContains('cert=foo', $params);
             $this->assertContains('certType=CA', $params);
             $this->assertNotContains('key=', $params);
@@ -38,6 +37,5 @@ class WssTest extends TestCase
         });
 
         $this->assertSame('9hyvgrkE', $this->api->ensureUploaded($response)->get('id'));
-
     }
 }

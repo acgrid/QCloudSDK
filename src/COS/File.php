@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\COS;
 
-
 use QCloudSDK\Core\Exceptions\InvalidArgumentException;
 use QCloudSDK\Core\FormDataTrait;
 
@@ -37,7 +36,9 @@ class File extends API
      */
     public function uploadString(string $path, string $filecontent, string $biz_attr = null, $insertOnly = null)
     {
-        if(strlen($filecontent) >= static::UPLOAD_MAX_SIZE) throw new InvalidArgumentException('Data is too large to upload directly. Use chunk-style uploading.');
+        if (strlen($filecontent) >= static::UPLOAD_MAX_SIZE) {
+            throw new InvalidArgumentException('Data is too large to upload directly. Use chunk-style uploading.');
+        }
         $op = 'upload';
         $sha1 = sha1($filecontent);
         $insertOnly = $this->makeBooleanInt($insertOnly);
@@ -55,8 +56,12 @@ class File extends API
      */
     public function uploadFile(string $path, string $localFile, string $biz_attr = null, $insertOnly = null)
     {
-        if(!is_file($localFile) || !is_readable($localFile)) throw new InvalidArgumentException("'$localFile' does not exist or can not be read.");
-        if(filesize($localFile) >= static::UPLOAD_MAX_SIZE) throw new InvalidArgumentException('Data is too large to upload directly. Use chunk-style uploading.');
+        if (!is_file($localFile) || !is_readable($localFile)) {
+            throw new InvalidArgumentException("'$localFile' does not exist or can not be read.");
+        }
+        if (filesize($localFile) >= static::UPLOAD_MAX_SIZE) {
+            throw new InvalidArgumentException('Data is too large to upload directly. Use chunk-style uploading.');
+        }
         $op = 'upload';
         $sha1 = sha1_file($localFile);
         $insertOnly = $this->makeBooleanInt($insertOnly);
@@ -199,5 +204,4 @@ class File extends API
     {
         return $this->targetSigned($path)->getObject();
     }
-    
 }

@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\CDN;
 
-
 use QCloudSDK\Core\AbstractFacade;
 
 /**

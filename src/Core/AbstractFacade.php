@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\Core;
 
-
 use Pimple\Container;
 
 abstract class AbstractFacade
@@ -28,8 +27,10 @@ abstract class AbstractFacade
 
     public function __get($name)
     {
-        if(!isset($this->instances[$name])){
-            if(!isset($this->map[$name])) throw new \RuntimeException('Undefined item key in facade.');
+        if (!isset($this->instances[$name])) {
+            if (!isset($this->map[$name])) {
+                throw new \RuntimeException('Undefined item key in facade.');
+            }
             $targetClass = $this->map[$name];
             $this->instances[$name] = new $targetClass($this->container['config']);
         }

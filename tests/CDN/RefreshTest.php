@@ -23,10 +23,10 @@ class RefreshTest extends TestCase
 
     public function testQuery()
     {
-        try{
+        try {
             $this->refresh->queryByDate('2017-01-15', '2017-02-25');
             $this->fail('Should throw an exception if miss the expectation');
-        }catch (\LogicException $e){
+        } catch (\LogicException $e) {
             $this->assertSame('Expected payload in path data.logs.', $e->getMessage());
         }
 
@@ -47,5 +47,4 @@ class RefreshTest extends TestCase
         parent::setUp();
         $this->refresh = new Refresh($this->configForTest(), $this->http);
     }
-
 }

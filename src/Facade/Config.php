@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\Facade;
 
-
 use QCloudSDK\Utils\Collection;
 
 class Config extends Collection

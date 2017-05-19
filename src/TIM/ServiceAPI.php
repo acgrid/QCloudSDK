@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\TIM;
 
-
 abstract class ServiceAPI extends API
 {
     const SERVICE_ENDPOINT = 'ServiceEndpoint';
@@ -13,5 +12,4 @@ abstract class ServiceAPI extends API
         parent::init();
         $this->endpoint = $this->endpoint . $this->getLocalConfig(self::SERVICE_ENDPOINT, 'v5/tlssmssvr/');
     }
-
 }

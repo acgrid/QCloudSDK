@@ -37,19 +37,20 @@ class SMSTest extends TestCase
     public function testSendSingle()
     {
         $this->setUp();
-        try{
+        try {
             $this->sms->sendTo('13612345678');
             $this->fail('Should prevent sending if lacking information.');
-        }catch (\LogicException $e){}
+        } catch (\LogicException $e) {
+        }
 
         $this->sms->useNormal('A sms packet.')->setExtend('WTF')->setExt('poi')->sendTo('13912345678');
-        $this->assertMyRequestUri(function(Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertContains('sendsms', $uri->getPath());
             parse_str($uri->getQuery(), $query);
             $this->assertArrayHasKey('sdkappid', $query);
             $this->assertArrayHasKey('random', $query);
         });
-        $this->assertMyRequestJson(function($json){
+        $this->assertMyRequestJson(function ($json) {
             $this->assertSame(['nationcode' => '86', 'mobile' => '13912345678'], $json['tel']);
             $this->assertSame('A sms packet.', $json['msg']);
             $this->assertSame(SMS::TYPE_NORMAL, $json['type']);
@@ -58,7 +59,7 @@ class SMSTest extends TestCase
         });
 
         $this->sms->usePromotion('Advertisement')->sendTo('852', '98765432');
-        $this->assertMyRequestJson(function($json){
+        $this->assertMyRequestJson(function ($json) {
             $this->assertSame(['nationcode' => '852', 'mobile' => '98765432'], $json['tel']);
             $this->assertSame('Advertisement', $json['msg']);
             $this->assertSame(SMS::TYPE_PROMOTION, $json['type']);
@@ -67,10 +68,10 @@ class SMSTest extends TestCase
         });
 
         $this->sms->setSign('SOS')->useTemplate(2048, ['验证码', 1334])->setExtend('VERITY')->sendTo('+8165243031');
-        $this->assertMyRequestUri(function(Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertContains('sendisms', $uri->getPath());
         });
-        $this->assertMyRequestJson(function($json){
+        $this->assertMyRequestJson(function ($json) {
             $this->assertSame('+8165243031', $json['tel']);
             $this->assertArrayNotHasKey('type', $json);
             $this->assertArrayNotHasKey('msg', $json);
@@ -80,22 +81,22 @@ class SMSTest extends TestCase
             $this->assertSame('VERITY', $json['extend']);
             $this->assertSame('poi', $json['ext']);
         });
-
     }
 
     public function testSendMulti()
     {
         $this->setUp();
         $this->assertNull($this->sms->sendMulti([]));
-        try{
+        try {
             $this->sms->sendMulti(array_fill(0, SMS::MAX_MULTI + 1, 'foo'));
             $this->fail('Should throw an exception on too many messages.');
-        }catch (\InvalidArgumentException $e) {}
+        } catch (\InvalidArgumentException $e) {
+        }
         $this->sms->setSign('SOS')->useTemplate(2048, ['验证码', '1334'])->setExtend('VERITY')->sendMulti(['13198765432', '13300001234']);
-        $this->assertMyRequestUri(function(Uri $uri){
+        $this->assertMyRequestUri(function (Uri $uri) {
             $this->assertContains('sendmultisms2', $uri->getPath());
         });
-        $this->assertMyRequestJson(function($json){
+        $this->assertMyRequestJson(function ($json) {
             $this->assertSame([
                 ['nationcode' => '86', 'mobile' => '13198765432'],
                 ['nationcode' => '86', 'mobile' => '13300001234'],
@@ -108,7 +109,5 @@ class SMSTest extends TestCase
             $this->assertSame('VERITY', $json['extend']);
             $this->assertSame('', $json['ext']);
         });
-
     }
-
 }

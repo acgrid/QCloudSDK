@@ -77,7 +77,6 @@ class TestAPI extends AbstractAPI
         $params['sign'] = "signed for $method to $url with param " . json_encode($params);
         return $params;
     }
-
 }
 
 class RetryTestAPI extends TestAPI
@@ -87,7 +86,6 @@ class RetryTestAPI extends TestAPI
 
 class AbstractAPITest extends TestCase
 {
-
     public function testAPI()
     {
         $http = new Http();
@@ -111,10 +109,10 @@ class AbstractAPITest extends TestCase
         $mock = MockClient::mock(MockClient::repeatResponses(4, json_encode([AbstractAPI::RESPONSE_CODE => 1000, AbstractAPI::RESPONSE_MESSAGE => 'System busy'])));
         $http->setClient(MockClient::makeFromMock($mock));
         $this->assertCount(3, $api->getHttp()->getMiddlewares());
-        try{
+        try {
             $api->request();
             $this->fail('Should throw ClientException');
-        }catch (ClientException $e){
+        } catch (ClientException $e) {
             $this->assertSame(1000, $e->getCode());
             $this->assertSame('System busy', $e->getMessage());
         }
@@ -132,10 +130,10 @@ class AbstractAPITest extends TestCase
         $http->setClient(MockClient::makeFromMock($mock));
         $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
         $api->setHttp($http);
-        try{
+        try {
             $api->request();
             $this->fail('Should throw ClientException');
-        }catch (ClientException $e){
+        } catch (ClientException $e) {
             $this->assertSame(9999, $e->getCode());
             $this->assertSame('Service terminated', $e->getMessage());
         }
@@ -149,10 +147,11 @@ class AbstractAPITest extends TestCase
         $http->setClient(MockClient::makeFromMock($mock));
         $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
         $api->setHttp($http);
-        try{
+        try {
             $api->request();
             $this->fail('Should throw ClientException');
-        }catch (HttpException $e){ }
+        } catch (HttpException $e) {
+        }
         $this->assertCount(0, $mock);
     }
 
@@ -161,23 +160,22 @@ class AbstractAPITest extends TestCase
         $api = new TestAPI(new Config());
         $api->setHttp($http = $this->getReflectedHttpWithResponse('foo'));
         $response = $api->requestSigned('get', 'www.example.org/', ['op' => 'foo']);
-        $this->assertRequest($http, function(Request $request){
+        $this->assertRequest($http, function (Request $request) {
             $this->assertSame('https://www.example.org/?' . http_build_query(['op' => 'foo', 'sign' => 'signed for GET to www.example.org/ with param {"op":"foo"}'], null, '&', PHP_QUERY_RFC3986), strval($request->getUri()));
         });
         $this->assertSame('foo', strval($response->getBody()));
         $api->setHttp($http = $this->getReflectedHttpWithResponse(json_encode([TestAPI::RESPONSE_CODE => 2])));
-        try{
+        try {
             $api->parseJSON('get', 'www.example.org/');
-        }catch (ClientException $exception){
+        } catch (ClientException $exception) {
             $this->assertSame('Unknown', $exception->getMessage());
         }
 
         $api->setHttp($http = $this->getReflectedHttpWithResponse(json_encode([TestAPI::RESPONSE_CODE => TestAPI::SUCCESS_CODE, 'data' => ['foo' => 'bar']])));
         $data = $api->advRequest();
         $this->assertSame('bar', $data->get('foo'));
-        $this->assertRequest($http, function(Request $request){
+        $this->assertRequest($http, function (Request $request) {
             $this->assertSame(http_build_query(['op' => 'bar', 'sign' => 'signed for POST to www.example.org with param {"op":"bar"}']), $request->getBody()->__toString());
         });
     }
-
 }

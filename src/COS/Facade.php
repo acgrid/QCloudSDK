@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\COS;
 
-
 use QCloudSDK\Core\AbstractFacade;
 
 /**

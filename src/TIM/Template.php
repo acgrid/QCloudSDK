@@ -3,13 +3,10 @@
 
 namespace QCloudSDK\TIM;
 
-
-
 use QCloudSDK\Core\IntegerArrayTrait;
 
 class Template extends ServiceAPI
 {
-
     use IntegerArrayTrait;
 
     /**
@@ -89,5 +86,4 @@ class Template extends ServiceAPI
         $params = ['tpl_page' => compact('offset', 'max')] + $this->signForGeneral($random);
         return $this->request('get_template', $random, $params);
     }
-    
 }

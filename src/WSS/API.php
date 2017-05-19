@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\WSS;
 
-
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\ActionTrait;
 use QCloudSDK\Core\GeneralSignatureTrait;
@@ -54,5 +53,4 @@ class API extends AbstractAPI
     {
         return $this->expectResult('data', $collection);
     }
-
 }

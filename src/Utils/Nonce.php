@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\Utils;
 
-
 class Nonce
 {
     public static function make()

@@ -3,14 +3,13 @@
 
 namespace QCloudSDK\Core;
 
-
+use GuzzleHttp\Middleware;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use QCloudSDK\Core\Exceptions\ClientException;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Log;
-use GuzzleHttp\Middleware;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractAPI
 {
@@ -120,7 +119,9 @@ abstract class AbstractAPI
      */
     public function parseJSONSigned($method, ...$args)
     {
-        if(isset($args[1])) $args[1] = $this->sign(strtoupper($method), $args[0], $args[1]);
+        if (isset($args[1])) {
+            $args[1] = $this->sign(strtoupper($method), $args[0], $args[1]);
+        }
         return $this->parseJSON($method, ...$args);
     }
 
@@ -131,7 +132,9 @@ abstract class AbstractAPI
      */
     public function requestSigned($method, ...$args)
     {
-        if(isset($args[1])) $args[1] = $this->sign(strtoupper($method), $args[0], $args[1]);
+        if (isset($args[1])) {
+            $args[1] = $this->sign(strtoupper($method), $args[0], $args[1]);
+        }
         return $this->http->$method(...$args);
     }
 
@@ -172,7 +175,7 @@ abstract class AbstractAPI
         ) {
             // Limit the number of retries to n
             if (++$retries <= $this->maxRetries && isset($response)) {
-                if(preg_match('/' . preg_quote(json_encode(static::RESPONSE_CODE), '/') . ':\s*(\d+)/', strval($response->getBody()), $match) && isset($this->retryCodes[$match[1]])){
+                if (preg_match('/' . preg_quote(json_encode(static::RESPONSE_CODE), '/') . ':\s*(\d+)/', strval($response->getBody()), $match) && isset($this->retryCodes[$match[1]])) {
                     Log::debug("Request to {$request->getUri()->getPath()} Result Code {$match[1]}, Retry count {$retries}.");
                     return true;
                 }
@@ -202,10 +205,16 @@ abstract class AbstractAPI
 
     public function sign($method, $urlWithoutScheme, array $params)
     {
-        if(!method_exists($this, 'doSign')) return $params;
+        if (!method_exists($this, 'doSign')) {
+            return $params;
+        }
         $signData = [];
-        if($this->signNeedMethod) $signData []= $method;
-        if($this->signNeedEndpoint) $signData []= $urlWithoutScheme;
+        if ($this->signNeedMethod) {
+            $signData []= $method;
+        }
+        if ($this->signNeedEndpoint) {
+            $signData []= $urlWithoutScheme;
+        }
         $signData []= $params;
         return $this->doSign(...$signData);
     }
@@ -223,8 +232,9 @@ abstract class AbstractAPI
      */
     protected function expectResult(string $key, Collection $data, $failureMsg = 'Remote API do not return expected data.')
     {
-        if(null === ($expected = $data->get($key))) throw new \LogicException($failureMsg);
+        if (null === ($expected = $data->get($key))) {
+            throw new \LogicException($failureMsg);
+        }
         return new Collection($expected);
     }
-
 }

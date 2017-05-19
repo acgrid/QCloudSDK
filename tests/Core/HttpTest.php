@@ -3,14 +3,14 @@
 
 namespace QCloudSDKTests\Core {
 
+    use GuzzleHttp\Client;
+    use GuzzleHttp\Middleware;
     use GuzzleHttp\Psr7\Request;
+    use Psr\Http\Message\RequestInterface;
     use QCloudSDK\Core\Exceptions\HttpException;
     use QCloudSDK\Core\Http;
     use QCloudSDKTests\MockClient;
     use QCloudSDKTests\TestCase;
-    use GuzzleHttp\Client;
-    use GuzzleHttp\Middleware;
-    use Psr\Http\Message\RequestInterface;
 
     class CoreHttpTest extends TestCase
     {
@@ -52,16 +52,18 @@ namespace QCloudSDKTests\Core {
             try {
                 $http->parseJSON($http->request('http://example.org', 'GET'));
                 $this->fail('Invalid json body check fail.');
-            } catch (HttpException $e) {}
+            } catch (HttpException $e) {
+            }
 
             $http->setClient(MockClient::make('{"foo":"bar"}'));
             $this->assertEquals(['foo' => 'bar'], $http->parseJSON($http->request('http://example.org', 'GET')));
 
             $http->setClient(MockClient::make(''));
-            try{
+            try {
                 $http->parseJSON($http->request('http://example.org', 'GET'));
                 $this->fail('Empty json body check fail.');
-            }catch (HttpException $e) {}
+            } catch (HttpException $e) {
+            }
 
             $http->setClient(MockClient::make('null'));
             $this->assertNull($http->parseJSON($http->request('http://example.org', 'GET')));
@@ -90,7 +92,7 @@ namespace QCloudSDKTests\Core {
 
             // array
             $http->post('example.org', $params);
-            $this->assertRequest($http, function(RequestInterface $request) use ($params){
+            $this->assertRequest($http, function (RequestInterface $request) use ($params) {
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('https://example.org', $request->getUri()->__toString());
                 $this->assertSame(http_build_query($params), $request->getBody()->__toString());
@@ -98,12 +100,11 @@ namespace QCloudSDKTests\Core {
 
             // string
             $http->post('http://example.org/', 'hello here.', $params);
-            $this->assertRequest($http, function(RequestInterface $request){
+            $this->assertRequest($http, function (RequestInterface $request) {
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('http://example.org/?foo=bar', $request->getUri()->__toString());
                 $this->assertSame('hello here.', $request->getBody()->__toString());
             });
-
         }
 
         /**
@@ -116,7 +117,7 @@ namespace QCloudSDKTests\Core {
             $query = ['op' => 'query'];
 
             $http->json('http://example.org', $sample, [], 0);
-            $this->assertRequest($http, function(RequestInterface $request) use ($sample){
+            $this->assertRequest($http, function (RequestInterface $request) use ($sample) {
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('http://example.org', $request->getUri()->__toString());
                 $this->assertSame(json_encode($sample), $request->getBody()->__toString());
@@ -124,13 +125,12 @@ namespace QCloudSDKTests\Core {
             });
 
             $http->json('http://example.org', $sample, $query, JSON_UNESCAPED_UNICODE);
-            $this->assertRequest($http, function(RequestInterface $request) use ($sample, $query){
+            $this->assertRequest($http, function (RequestInterface $request) use ($sample, $query) {
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('http://example.org?' . http_build_query($query), $request->getUri()->__toString());
                 $this->assertSame(json_encode($sample, JSON_UNESCAPED_UNICODE), $request->getBody()->__toString());
                 $this->assertSame('application/json', $request->getHeaderLine('Content-Type'));
             });
-
         }
 
         /**
@@ -141,7 +141,7 @@ namespace QCloudSDKTests\Core {
             $http = $this->getReflectedHttp();
             $http->upload('http://example.org', ['var' => 'poi'], ['foo' => 'bar', 'hello' => 'world'], ['op' => 'upload']);
 
-            $this->assertRequest($http, function(Request $request){
+            $this->assertRequest($http, function (Request $request) {
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('http://example.org?op=upload', $request->getUri()->__toString());
                 $body = strval($request->getBody());
@@ -149,7 +149,6 @@ namespace QCloudSDKTests\Core {
                 $this->assertContains($this->makeFormData('hello', 'world'), $body);
                 $this->assertContains($this->makeFormData('var', 'poi'), $body);
             });
-
         }
 
         public function testUserHandler()

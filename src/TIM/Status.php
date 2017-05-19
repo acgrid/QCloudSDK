@@ -3,13 +3,11 @@
 
 namespace QCloudSDK\TIM;
 
-
 use QCloudSDK\Core\CustomDateParamTrait;
 use QCloudSDK\Core\TimestampTrait;
 
 class Status extends ServiceAPI
 {
-
     const TYPE_DELIVERY = 0;
     const TYPE_REPLY = 1;
 
@@ -35,7 +33,9 @@ class Status extends ServiceAPI
 
     public function getType()
     {
-        if(!isset($this->type)) throw new \LogicException('Status to pull is not defined.');
+        if (!isset($this->type)) {
+            throw new \LogicException('Status to pull is not defined.');
+        }
         return $this->type;
     }
 
@@ -102,5 +102,4 @@ class Status extends ServiceAPI
     {
         return $this->requestStatus('pullcallbackstatus', intval($this->makeDateHourParam($beginHour)), intval($this->makeDateHourParam($endHour)));
     }
-
 }

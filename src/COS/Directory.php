@@ -3,7 +3,6 @@
 
 namespace QCloudSDK\COS;
 
-
 class Directory extends API
 {
     /**
@@ -46,7 +45,9 @@ class Directory extends API
      */
     public function delete(string $directory)
     {
-        if(empty($directory) || $directory === '/') throw new \InvalidArgumentException("Cannot delete the root directory.");
+        if (empty($directory) || $directory === '/') {
+            throw new \InvalidArgumentException("Cannot delete the root directory.");
+        }
         return $this->setOp('delete')->targetOnceSigned("$directory/")->postJsonRequest();
     }
 }

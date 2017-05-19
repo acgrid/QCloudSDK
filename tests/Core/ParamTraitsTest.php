@@ -2,7 +2,6 @@
 
 namespace QCloudSDKTests\Core;
 
-
 use QCloudSDK\Core\ActionTrait;
 use QCloudSDK\Core\ArrayParamTrait;
 use QCloudSDK\Core\CustomDateParamTrait;
@@ -34,18 +33,21 @@ class ParamTraitsTest extends TestCase
     public function testArray()
     {
         $this->assertSame(['key.0' => 'value'], $this->makeArrayParam('key', 'value'));
-        $this->assertSame(['key.0' => '1.6'], $this->makeArrayParam('key', 1.56, function(&$value){
+        $this->assertSame(['key.0' => '1.6'], $this->makeArrayParam('key', 1.56, function (&$value) {
             $value = strval(round($value, 1));
         }));
         $sample = ['key.0' => 'a', 'key.1' => 'b'];
         $this->assertSame($sample, $this->makeArrayParam('key', ['x' => 'a', 'y' => 'b']));
-        $this->assertSame($sample, $this->makeArrayParam('key', (function(){
-            foreach(['a', 'b'] as $value) yield $value;
+        $this->assertSame($sample, $this->makeArrayParam('key', (function () {
+            foreach (['a', 'b'] as $value) {
+                yield $value;
+            }
         })()));
-        try{
+        try {
             $this->makeArrayParam('foo', new \stdClass());
             $this->fail('Should throw an exception for something can not be processed.');
-        }catch (\InvalidArgumentException $e) {}
+        } catch (\InvalidArgumentException $e) {
+        }
     }
 
     public function testDateTime()
@@ -55,19 +57,21 @@ class ParamTraitsTest extends TestCase
         $this->assertSame($sample->format('Y-m-d H:i:s'), $this->makeDateTimeParam($sample->getTimestamp()));
         $this->assertSame($sample->format('Y-m-d H:i:s'), $this->makeDateTimeParam('now'));
         $this->assertSame($sample->format('Y-m-d'), $this->makeDateParam($sample));
-        try{
+        try {
             $this->makeDateParam([]);
             $this->fail('Should throw an exception on nothing can be a date.');
-        }catch (\InvalidArgumentException $e) {}
+        } catch (\InvalidArgumentException $e) {
+        }
 
         $this->assertSame($sample->format('YmdH'), $this->makeDateHourParam($sample));
         $this->assertSame($sample->format('YmdH'), $this->makeDateHourParam('now'));
         $this->assertSame($sample->format('YmdH'), $this->makeDateHourParam($sample->format('YmdH')));
         $this->assertSame($sample->format('YmdH'), $this->makeDateHourParam($sample->getTimestamp()));
-        try{
+        try {
             $this->makeDateHourParam([]);
             $this->fail('Should throw an exception on nothing can be a date.');
-        }catch (\InvalidArgumentException $e) {}
+        } catch (\InvalidArgumentException $e) {
+        }
     }
 
     public function testFormData()
@@ -87,7 +91,7 @@ class ParamTraitsTest extends TestCase
     public function testJson()
     {
         $params = ['foo' => ['x' => 'b', 'y' => 'a']];
-        $this->ensureJsonParam($params, 'foo', function(&$value){
+        $this->ensureJsonParam($params, 'foo', function (&$value) {
             unset($value['x']);
         });
         $this->assertSame(json_encode(['y' => 'a']), $params['foo']);
@@ -101,10 +105,11 @@ class ParamTraitsTest extends TestCase
         $this->assertSame($time, $this->makeTimestampParam(strval($time)));
         $this->assertSame($time, $this->makeTimestampParam(date('Y-m-d H:i:s', $time)));
         $this->assertSame($time, $this->makeTimestampParam($now));
-        try{
+        try {
             $this->makeTimestampParam([]);
             $this->fail('Should throw an exception on nothing can be a date.');
-        }catch (\InvalidArgumentException $e) {}
+        } catch (\InvalidArgumentException $e) {
+        }
     }
 
     public function testOnOffParam()
@@ -121,5 +126,4 @@ class ParamTraitsTest extends TestCase
         $this->ensureOnOffParam($params, 'foo');
         $this->assertSame(['foo' => 'off'], $params);
     }
-
 }
