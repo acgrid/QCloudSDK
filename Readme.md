@@ -7,6 +7,7 @@
 <a href="https://scrutinizer-ci.com/g/acgrid/qcloud/build-status/master"><img src="https://scrutinizer-ci.com/g/acgrid/QCloudSDK/badges/build.png?b=master" alt="Build Status"></a>
 <a href="https://scrutinizer-ci.com/g/acgrid/qcloud/?branch=master"><img src="https://scrutinizer-ci.com/g/acgrid/QCloudSDK/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
 <a href="https://scrutinizer-ci.com/g/acgrid/qcloud/?branch=master"><img src="https://scrutinizer-ci.com/g/acgrid/QCloudSDK/badges/coverage.png?b=master" alt="Code Coverage"></a>
+<a href="https://styleci.io/repos/91427152/"><img src="https://styleci.io/repos/91427152/shield?branch=master" alt="StyleCI"></a>
 <a href="https://packagist.org/packages/acgrid/qcloud"><img src="https://poser.pugx.org/acgrid/qcloud/license" alt="License"></a>
 </p>
 <hr />
