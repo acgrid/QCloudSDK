@@ -40,7 +40,7 @@ abstract class API extends AbstractAPI
         return $this->parseJSON('json', $this->endpoint . $endpoint, $params, ['sdkappid' => $this->appId, 'random' => $random]);
     }
 
-    public function signForMobile($mobiles, &$random, int $time = null)
+    public function signForMobile($mobiles, &$random, $mobileParamName = 'mobile', int $time = null)
     {
         if(is_array($mobiles)){
             if(isset($mobiles['mobile'])){
@@ -51,7 +51,7 @@ abstract class API extends AbstractAPI
                 }, $mobiles));
             }
         }
-        $sig = hash("sha256", $this->commonSignature($random, $time). "&mobile=$mobiles"); // https://github.com/qcloudsms/qcloudsms/blob/master/demo/php/SmsTools.php#L12
+        $sig = hash("sha256", $this->commonSignature($random, $time). "&$mobileParamName=$mobiles"); // https://github.com/qcloudsms/qcloudsms/blob/master/demo/php/SmsTools.php#L12
         return compact('time', 'sig');
     }
 

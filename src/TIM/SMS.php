@@ -121,9 +121,9 @@ class SMS extends API
         return $params;
     }
 
-    protected function send($endpoint, $normalizedNumber)
+    protected function send($endpoint, $normalizedNumber, $numberName)
     {
-        $params = ['tel' => $normalizedNumber] + $this->prepareContent() + $this->signForMobile($normalizedNumber, $random);
+        $params = ['tel' => $normalizedNumber] + $this->prepareContent() + $this->signForMobile($normalizedNumber, $random, $numberName);
         return $this->request($endpoint, $random, $params);
     }
 
@@ -139,7 +139,7 @@ class SMS extends API
         if(count($domesticNumbers) > static::MAX_MULTI) throw new \InvalidArgumentException('Reached the limit of receivers in once multiple sending.');
         return $this->send('sendmultisms2', array_map(function($domesticNumber){
             return $this->makeMobile(static::DOMESTIC_CODE, $domesticNumber);
-        }, $domesticNumbers));
+        }, $domesticNumbers), 'mobile');
     }
 
     /**
@@ -153,11 +153,11 @@ class SMS extends API
     public function sendTo(string $nationCodeOrInternationalNumberOrDomesticNumber, string $localNumber = null)
     {
         if(isset($localNumber)){
-            return $this->send('sendsms', $this->makeMobile($nationCodeOrInternationalNumberOrDomesticNumber, $localNumber));
+            return $this->send('sendsms', $this->makeMobile($nationCodeOrInternationalNumberOrDomesticNumber, $localNumber), 'mobile');
         }elseif($nationCodeOrInternationalNumberOrDomesticNumber[0] === '+'){
-            return $this->send('sendisms', $nationCodeOrInternationalNumberOrDomesticNumber);
+            return $this->send('sendisms', $nationCodeOrInternationalNumberOrDomesticNumber, 'tel');
         }else{
-            return $this->send('sendsms', $this->makeMobile(static::DOMESTIC_CODE, $nationCodeOrInternationalNumberOrDomesticNumber));
+            return $this->send('sendsms', $this->makeMobile(static::DOMESTIC_CODE, $nationCodeOrInternationalNumberOrDomesticNumber), 'mobile');
         }
     }
 
