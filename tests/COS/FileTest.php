@@ -22,10 +22,11 @@ class FileTest extends TestCase
     public function testUploadBulk()
     {
         $content = "<?php\nphpinfo();";
-        $this->api->uploadString('foo.php', $content, 'bar', true);
+        $this->api->uploadString('/x//foo.php', $content, 'bar', true);
         $this->assertMyRequestMethod('POST');
         $this->assertMyRequestUri(function (Uri $uri) {
-            $this->assertStringEndsWith('/foo.php', $uri->getPath());
+            $this->assertStringStartsWith('https://', $uri->__toString());
+            $this->assertStringEndsWith('newbucket/x/foo.php', $uri->getPath());
         });
         $this->assertMyRequestBody(function ($body) use ($content) {
             $this->assertContains($this->makeFormData('op', 'upload'), $body);

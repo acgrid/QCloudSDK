@@ -185,7 +185,12 @@ class API extends AbstractAPI
 
     protected function buildUrl()
     {
-        return str_replace('//', '/', join('/', [$this->apiUrl, $this->bucket, $this->path]));
+        return $this->getUrl($this->path);
+    }
+
+    public function getUrl($path)
+    {
+        return preg_replace('#([^:])//#', '\1/', join('/', [$this->apiUrl, $this->bucket, $path]));
     }
 
     public function target(string $path)
