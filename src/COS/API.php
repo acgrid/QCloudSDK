@@ -81,7 +81,7 @@ class API extends AbstractAPI
 
     protected function setApiUrl()
     {
-        $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s-%s.cos%s.myqcloud.com/files/v%u', $this->bucket, $this->appId, $this->appRegion, $this->getLocalConfig(static::API_VERSION, 2)));
+        $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s.file.myqcloud.com/files/v%u/%s', $this->appRegion, $this->getLocalConfig(static::API_VERSION, 2), $this->appId));
     }
 
     /**
