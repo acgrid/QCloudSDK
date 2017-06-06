@@ -140,14 +140,15 @@ class API extends AbstractAPI
     }
 
     /**
+     * @param string $path
      * @param int $ttl
      * @param int|null $time
      * @param string|null $rand
      * @return string
      */
-    public function signMultiEffect(int $ttl = 86400, int $time = null, string $rand = null)
+    public function signMultiEffect(string $path = '', int $ttl = 86400, int $time = null, string $rand = null)
     {
-        return $this->doSign($ttl, '', $time, $rand);
+        return $this->doSign($ttl, empty($path) ? '' : "/{$this->appId}/{$this->bucket}/{$path}", $time, $rand);
     }
 
     /**

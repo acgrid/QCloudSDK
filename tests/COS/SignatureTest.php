@@ -30,7 +30,8 @@ class SignatureTest extends TestCase
 
     public function testMultipleSignature()
     {
-        $this->assertSame('v6+um3VE3lxGz97PmnSg6+/V9PZhPTIwMDAwMSZiPW5ld2J1Y2tldCZrPUFLSURVZkxVRVVpZ1FpWHFtN0NWU3NwS0pudWFpSUt0eHFBdiZlPTE0NzA3MzcwMDAmdD0xNDcwNzM2OTQwJnI9NDkwMjU4OTQzJmY9', $this->api->signMultiEffect(60, $this->time, $this->rand));
+        $this->assertSame('v6+um3VE3lxGz97PmnSg6+/V9PZhPTIwMDAwMSZiPW5ld2J1Y2tldCZrPUFLSURVZkxVRVVpZ1FpWHFtN0NWU3NwS0pudWFpSUt0eHFBdiZlPTE0NzA3MzcwMDAmdD0xNDcwNzM2OTQwJnI9NDkwMjU4OTQzJmY9', $this->api->signMultiEffect('', 60, $this->time, $this->rand));
+        $this->assertSame('9YbC8fCS6piTyV6Qdc5gJqEwZ9JhPTIwMDAwMSZiPW5ld2J1Y2tldCZrPUFLSURVZkxVRVVpZ1FpWHFtN0NWU3NwS0pudWFpSUt0eHFBdiZlPTE0NzA3MzcwMDAmdD0xNDcwNzM2OTQwJnI9NDkwMjU4OTQzJmY9LzIwMDAwMS9uZXdidWNrZXQvdGVzdC5qcGc=', $this->api->signMultiEffect('test.jpg', 60, $this->time, $this->rand));
     }
 
     public function testRandom()
