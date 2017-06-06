@@ -182,22 +182,22 @@ class File extends API
 
     /**
      * @link https://www.qcloud.com/document/product/436/8429
+     * @param bool $cdn
      * @return \Psr\Http\Message\ResponseInterface
      */
-    protected function getObject()
+    protected function getObject(bool $cdn)
     {
-        $this->headers->set('Host', sprintf('%s-%s.%s.mycloud.com', $this->bucket, $this->appId, $this->appRegion));
-        return $this->getHttp()->request($this->buildUrl(), 'GET', ['headers' => $this->headers->all()]);
+        return $this->getHttp()->request($this->buildDownloadUrl($cdn), 'GET', ['headers' => $this->headers->forget('Host')->all()]);
     }
 
-    public function downloadPublic($path)
+    public function downloadPublic($path, bool $cdn = false)
     {
-        return $this->target($path)->getObject();
+        return $this->target($path)->getObject($cdn);
     }
 
-    public function downloadPrivate($path)
+    public function downloadPrivate($path, bool $cdn = false)
     {
-        return $this->targetSigned($path)->getObject();
+        return $this->targetSigned($path)->getObject($cdn);
     }
     
 }

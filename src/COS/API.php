@@ -188,9 +188,30 @@ class API extends AbstractAPI
         return $this->getUrl($this->path);
     }
 
+    protected function buildDownloadUrl(bool $cdn = false)
+    {
+        return $cdn ? $this->getAccessUrl($this->path) : $this->getSourceUrl($this->path);
+    }
+
     public function getUrl($path)
     {
         return preg_replace('#([^:])//#', '\1/', join('/', [$this->apiUrl, $this->bucket, $path]));
+    }
+
+    protected function getDownloadUrl($region, $path)
+    {
+        if($path[0] === '/') $path = substr($path, 1);
+        return sprintf('https://%s-%s.%s.myqcloud.com/%s', $this->bucket, $this->appId, $region, $path);
+    }
+
+    public function getAccessUrl($path)
+    {
+        return $this->getDownloadUrl('file', $path);
+    }
+
+    public function getSourceUrl($path)
+    {
+        return $this->getDownloadUrl("cos{$this->appRegion}", $path);
     }
 
     public function target(string $path)
@@ -218,7 +239,7 @@ class API extends AbstractAPI
     {
         $params = $this->params ?? [];
         if($paramOption !== 'multipart') $params += ['op' => $this->op];
-        return $this->parseJSON('request', $this->buildUrl(), $method, [$paramOption => $params, 'headers' => $this->headers->all()]);
+        return $this->parseJSON('request', $this->buildUrl(), $method, [$paramOption => $params, 'headers' => $this->headers->forget('Host')->all()]);
     }
 
     public function getQueryRequest()

@@ -150,15 +150,18 @@ class FileTest extends TestCase
     {
         $this->api->downloadPublic('foo.html');
         $this->assertMyRequestMethod('GET');
+        $this->assertMyRequestUri(function (Uri $uri) {
+            $this->assertSame('https://newbucket-200001.cosgz.myqcloud.com/foo.html', $uri->__toString());
+        });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayNotHasKey('Authorization', $headers);
-            $this->assertSame('newbucket-200001.gz.mycloud.com', $headers['Host'][0]);
-        });
-        $this->assertMyRequestUri(function (Uri $uri) {
-            $this->assertStringEndsWith('/foo.html', $uri->getPath());
+            $this->assertSame('newbucket-200001.cosgz.myqcloud.com', $headers['Host'][0]);
         });
 
-        $this->api->downloadPrivate('bar.html');
+        $this->api->downloadPrivate('bar.html', true);
+        $this->assertMyRequestUri(function (Uri $uri) {
+            $this->assertSame('https://newbucket-200001.file.myqcloud.com/bar.html', $uri->__toString());
+        });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
         });

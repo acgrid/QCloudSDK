@@ -189,10 +189,12 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      * Remove item form Collection.
      *
      * @param string $key
+     * @return Collection
      */
     public function forget($key)
     {
         Arr::forget($this->items, $key);
+        return $this;
     }
 
     /**
