@@ -171,7 +171,7 @@ abstract class AbstractAPI
             ResponseInterface $response = null
         ) {
             // Limit the number of retries to n
-            if (++$retries <= $this->maxRetries && isset($response)) {
+            if (++$retries <= $this->maxRetries && isset($response) && $response->getBody()->getSize() < 1048576) {
                 if(preg_match('/' . preg_quote(json_encode(static::RESPONSE_CODE), '/') . ':\s*(\d+)/', strval($response->getBody()), $match) && isset($this->retryCodes[$match[1]])){
                     Log::debug("Request to {$request->getUri()->getPath()} Result Code {$match[1]}, Retry count {$retries}.");
                     return true;

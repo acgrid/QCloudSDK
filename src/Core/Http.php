@@ -242,11 +242,12 @@ class Http
 
         $response = $this->getClient()->request($method, $url, $options);
 
+        $responseLength = $response->getBody()->getSize();
         Log::debug('API response:', [
             'Status' => $response->getStatusCode(),
             'Reason' => $response->getReasonPhrase(),
             'Headers' => $response->getHeaders(),
-            'Body' => strval($response->getBody()),
+            'Body' => $responseLength > 16384 ? "(Something with $responseLength bytes long)" : strval($response->getBody()),
         ]);
 
         return $response;

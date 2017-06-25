@@ -187,7 +187,7 @@ class File extends API
      */
     protected function getObject(bool $cdn)
     {
-        return $this->getHttp()->request($this->buildDownloadUrl($cdn), 'GET', ['headers' => $this->headers->forget('Host')->all()]);
+        return $this->getHttp()->request($this->buildDownloadUrl($cdn), 'GET', ['headers' => $this->headers->forget('Host')->all(), 'timeout' => 0]);
     }
 
     public function downloadPublic($path, bool $cdn = false)
