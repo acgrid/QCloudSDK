@@ -19,7 +19,8 @@
         "ext-openssl": "*",
         "pimple/pimple": "~3.0",
         "monolog/monolog": "^1.17",
-        "guzzlehttp/guzzle": "~6.2.1"
+        "guzzlehttp/guzzle": "~6.2.1",
+        "tightenco/collect": "^5.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^5",
