@@ -14,6 +14,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
     protected $handler;
 
     protected $sampleA = ['key' => Callback::SAMPLE_KEY, 'action' => 'A', 'foo' => 'bar'];
+    protected $sampleB = ['key' => Callback::SAMPLE_KEY, 'action' => 'B', 'foo' => 'wtf'];
     protected $sampleC = ['key' => Callback::SAMPLE_KEY, 'action' => 'C', 'foo' => 'baz'];
 
     protected $touched = false;
@@ -24,6 +25,9 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
         $this->handler->onA(function($data){
             $this->assertSame($data, $this->sampleA);
             $this->touched = true;
+        });
+        $this->handler->on('B', function(){
+            throw new \RuntimeException('Something went wrong.', 233);
         });
     }
 
@@ -52,10 +56,17 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('A', $this->handler->action);
         $this->assertTrue($this->touched);
 
-        $response = json_decode(strval($this->handler->respond(new ServerRequest('POST', '/foo', [], json_encode($this->sampleC)))->getBody()));
+        $response = $this->handler->respond(new ServerRequest('POST', '/foo', [], json_encode($this->sampleB)));
+        $json = json_decode(strval($response->getBody()));
+        $this->assertSame('B', $this->handler->action);
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame(233, $json->result);
+        $this->assertSame('Something went wrong.', $json->errmsg);
+
+        $json = json_decode(strval($this->handler->respond(new ServerRequest('POST', '/foo', [], json_encode($this->sampleC)))->getBody()));
         $this->assertSame('C', $this->handler->action);
-        $this->assertSame(0, $response->result);
-        $this->assertSame('OK', $response->errmsg);
+        $this->assertSame(0, $json->result);
+        $this->assertSame('OK', $json->errmsg);
     }
 
 
