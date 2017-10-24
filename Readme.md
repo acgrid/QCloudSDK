@@ -28,5 +28,5 @@
  ## Components available
  * Content Delivery Network (Full requests, partial business integration)
  * Could Object Storage (Full requests)
- * TIM (SMS&Voice, full requests, lacking of callbacks)
+ * TIM (SMS&Voice, full requests and callbacks)
  * WSS (HTTPS certificates uploading)

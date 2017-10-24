@@ -42,8 +42,8 @@ class SMSCallback extends AbstractCallback
             foreach($this->decoded as $item){
                 $this->trigger(self::EVENT_REPORT, $item);
             }
-        }elseif(isset($this->decoded->nationcode, $this->decoded->mobile, $this->decoded->text, $this->decoded->time, $this->decoded->sign, $this->decoded->extend)){
-            $this->trigger(self::EVENT_REPLY, $this->decoded->nationcode, $this->decoded->mobile, $this->decoded->text, $this->decoded->time, $this->decoded->sign, $this->decoded->extend);
+        }elseif(isset($this->decoded->nationcode, $this->decoded->mobile, $this->decoded->text, $this->decoded->time, $this->decoded->sign)){
+            $this->trigger(self::EVENT_REPLY, $this->decoded->nationcode, $this->decoded->mobile, $this->decoded->text, $this->decoded->time, $this->decoded->sign, $this->decoded->extend ?? null);
         }
     }
 
