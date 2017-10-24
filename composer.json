@@ -36,5 +36,8 @@
         "psr-4": {
             "QCloudSDKTests\\": "tests/"
         }
+    },
+    "suggest": {
+        "http-interop/response-sender": "Actually send PSR-7 response object if no compatible components are used."
     }
 }
