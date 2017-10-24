@@ -5,31 +5,27 @@ namespace QCloudSDKTests;
 
 
 use QCloudSDK\Core\AbstractCallback;
+use QCloudSDK\Core\JSONCallback;
 
 class Callback extends AbstractCallback
 {
     const SAMPLE_KEY = 'secret';
-    protected $decoded;
     public $action;
 
-    protected function checkRequest()
-    {
-        $this->decoded = json_decode(strval($this->request->getBody()), true);
-        return json_last_error() === JSON_ERROR_NONE;
-    }
+    use JSONCallback;
 
     protected function checkAuthentic()
     {
-        return isset($this->decoded['key']) && $this->decoded['key'] === self::SAMPLE_KEY;
+        return isset($this->decoded->key) && $this->decoded->key === self::SAMPLE_KEY;
     }
 
     protected function dispatch()
     {
-        $this->action = $this->decoded['action'] ?? null;
+        $this->action = $this->decoded->action ?? null;
         switch($this->action){
             case 'A':
             case 'B':
-            case 'C': $this->trigger($this->action, $this->decoded); return true;
+            case 'C': $this->trigger($this->action, (array) $this->decoded); return true;
             default: return null;
         }
     }
