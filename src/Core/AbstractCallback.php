@@ -19,6 +19,10 @@ abstract class AbstractCallback
      * @var ServerRequestInterface
      */
     protected $request;
+    /**
+     * @var int
+     */
+    protected $handledCounter = 0;
 
     public function __construct()
     {
@@ -43,6 +47,7 @@ abstract class AbstractCallback
 
     protected function trigger(string $event, ... $args)
     {
+        $this->handledCounter++;
         return isset($this->handlers[$event]) ? call_user_func_array($this->handlers[$event], $args) : null;
     }
 
@@ -61,20 +66,14 @@ abstract class AbstractCallback
         throw new HttpException('No handler defined for such request', self::NOT_FOUND);
     }
 
-    protected function checkRequest()
-    {
-        return true;
-    }
+    abstract protected function checkRequest();
 
     protected function checkAuthentic()
     {
         return true;
     }
 
-    protected function dispatch()
-    {
-        return null;
-    }
+    abstract protected function dispatch();
 
     protected function makeRespondJSON($result = 0, $errmsg = 'OK')
     {
@@ -84,10 +83,12 @@ abstract class AbstractCallback
     public function respond(ServerRequestInterface $serverRequest)
     {
         $this->request = $serverRequest;
+        $this->handledCounter = 0;
         try{
             if(!$this->checkRequest()) $this->trigger(self::BAD_REQUEST);
             if(!$this->checkAuthentic()) $this->trigger(self::FORBIDDEN);
-            if(!$this->dispatch()) $this->trigger(self::NOT_FOUND);
+            $this->dispatch();
+            if($this->handledCounter === 0) $this->trigger(self::NOT_FOUND);
             return new Response(200, [], $this->makeRespondJSON());
         }catch (HttpException $e){
             return new Response($e->getCode(), [], $this->makeRespondJSON($e->getCode(), $e->getMessage()));
