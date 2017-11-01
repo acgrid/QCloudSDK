@@ -5,6 +5,7 @@ namespace QCloudSDK\COS;
 
 
 use QCloudSDK\Core\AbstractAPI;
+use QCloudSDK\Core\BucketTrait;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Nonce;
@@ -17,6 +18,9 @@ class API extends AbstractAPI
     const API_VERSION = 'ApiVersion';
     const APP_ID = 'AppId';
     const BUCKET = 'bucket';
+
+    use BucketTrait;
+
     /**
      * @var string
      */
@@ -38,10 +42,6 @@ class API extends AbstractAPI
      */
     protected $appRegion;
     // USED FOR BUILD REQUEST
-    /**
-     * @var string
-     */
-    protected $bucket;
     /**
      * @var string
      */
@@ -82,27 +82,6 @@ class API extends AbstractAPI
     protected function setApiUrl()
     {
         $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s.file.myqcloud.com/files/v%u/%s', $this->appRegion, $this->getLocalConfig(static::API_VERSION, 2), $this->appId));
-    }
-
-    /**
-     * @return string
-     */
-    public function getBucket(): string
-    {
-        return $this->bucket;
-    }
-
-    /**
-     * @param string $bucket
-     * @return $this
-     */
-    public function setBucket(string $bucket)
-    {
-        if($bucket !== $this->bucket){
-            $this->bucket = $bucket;
-            $this->setApiUrl();
-        }
-        return $this;
     }
 
     /**
