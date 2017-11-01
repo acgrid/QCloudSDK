@@ -24,9 +24,12 @@
  * https://github.com/QcloudApi/qcloudapi-sdk-php
  * https://github.com/qcloudsms/qcloudsms
  * https://github.com/tencentyun/cos-php-sdk-v4
+ * https://github.com/tencentyun/image-php-sdk-v2.0
  
  ## Components available
  * Content Delivery Network (Full requests, partial business integration)
  * Could Object Storage (Full requests)
  * TIM (SMS&Voice, full requests and callbacks)
  * WSS (HTTPS certificates uploading)
+ * Image
+   * Face detection, shaping, comparing and verification

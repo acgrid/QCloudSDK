@@ -37,6 +37,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 'AppId' => '100032221',
                 'AppKey' => 'dffdfd6029698a5fdf4',
             ],
+            'image' => [
+                'AppId' => '1252821871',
+                'bucket' => 'tencentyun',
+                Config::COMMON_SECRET_ID => 'AKIDgaoOYh2kOmJfWVdH4lpfxScG2zPLPGoK',
+                Config::COMMON_SECRET_KEY => 'nwOKDouy5JctNOlnere4gkVoOUz5EYAb',
+                'ApiScheme' => 'http',
+                'ApiHost' => 'test.image.myqcloud.com'
+            ],
         ]);
     }
 

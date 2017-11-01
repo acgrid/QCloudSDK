@@ -15,6 +15,7 @@ use QCloudSDK\Utils\Log;
  * @property \QCloudSDK\COS\Facade $cos
  * @property \QCloudSDK\TIM\Facade $tim
  * @property \QCloudSDK\WSS\API    $wss
+ * @property \QCloudSDK\Image\Facade $image
  */
 class APIs extends Container
 {
@@ -25,6 +26,7 @@ class APIs extends Container
         Provider\TIM::class,
         Provider\WSS::class,
         Provider\COS::class,
+        Provider\Image::class,
     ];
 
     public function __construct(array $configData)
