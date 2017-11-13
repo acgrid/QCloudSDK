@@ -135,7 +135,7 @@ class Processor extends API
     public function domain(string $domain)
     {
         $this->cdn = $domain;
-        if($this->cdn[-1] !== '/') $this->cdn .= '/';
+        if(substr($this->cdn, -1) !== '/') $this->cdn .= '/';
         return $this;
     }
 
