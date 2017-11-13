@@ -42,8 +42,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 'bucket' => 'tencentyun',
                 Config::COMMON_SECRET_ID => 'AKIDgaoOYh2kOmJfWVdH4lpfxScG2zPLPGoK',
                 Config::COMMON_SECRET_KEY => 'nwOKDouy5JctNOlnere4gkVoOUz5EYAb',
+                Config::COMMON_REGION => 'gz',
                 'ApiScheme' => 'http',
-                'ApiHost' => 'test.image.myqcloud.com'
+                'ApiHost' => 'test.image.myqcloud.com',
+                'private' => 60,
+                'style-separator' => '!',
             ],
         ]);
     }

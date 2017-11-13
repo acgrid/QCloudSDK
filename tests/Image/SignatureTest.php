@@ -3,13 +3,13 @@
 namespace QCloudSDKTests\Image;
 
 
-use QCloudSDK\Image\BucketAPI;
+use QCloudSDK\Image\Processor;
 use QCloudSDKTests\TestCase;
 
 class SignatureTest extends TestCase
 {
     /**
-     * @var BucketAPI
+     * @var Processor
      */
     protected $api;
 
@@ -29,7 +29,7 @@ class SignatureTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->api = new BucketAPI($this->configForTest(), $this->http);
+        $this->api = new Processor($this->configForTest(), $this->http);
     }
 
 }
