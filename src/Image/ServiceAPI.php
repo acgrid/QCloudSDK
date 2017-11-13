@@ -34,7 +34,7 @@ class ServiceAPI extends API
     {
         $this->addParams(['appid' => $this->appId]);
         $this->headers->set('Authorization', $this->signMultiEffect());
-        return $this->parseJSON('request', $this->apiUrl . $endpoint, $method, [$paramOption => $this->params, 'headers' => $this->headers->all()]);
+        return $this->parseJSON('request', $this->apiUrl . $endpoint, $method, [$paramOption => $this->params, 'headers' => $this->headers->all(), 'timeout' => 60]);
     }
 
     public function postRequest(string $endpoint)
