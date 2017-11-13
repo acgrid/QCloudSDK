@@ -51,8 +51,8 @@ class Processor extends API
     protected function setApiUrl()
     {
         $scheme = $this->getLocalConfig(static::API_SCHEME, static::DEFAULT_SCHEME);
-        $this->apiUrl = sprintf('%s://%s-%s.pic%s.myqcloud.com/', $scheme, $this->bucket, $this->appId, $this->region);
-        $this->cdnUrl = sprintf('%s://%s-%s.image.myqcloud.com/', $scheme, $this->bucket, $this->appId);
+        $this->apiUrl = sprintf('%s://%s-%s.pic%s.myqcloud.com', $scheme, $this->bucket, $this->appId, $this->region);
+        $this->cdnUrl = sprintf('%s://%s-%s.image.myqcloud.com', $scheme, $this->bucket, $this->appId);
     }
 
     public function region(string $region)
@@ -96,7 +96,7 @@ class Processor extends API
     public function file(string $path)
     {
         $this->path = trim($path);
-        if($this->path[0] === '/') $this->path = substr($this->path, 1);
+        if($this->path[0] !== '/') $this->path = '/' . $this->path;
         return $this;
     }
 
@@ -133,13 +133,13 @@ class Processor extends API
     public function domain(string $domain)
     {
         $this->cdn = $domain;
-        if(substr($this->cdn, -1) !== '/') $this->cdn .= '/';
+        if(substr($this->cdn, -1) === '/') $this->cdn = substr($this->cdn, 0, -1);
         return $this;
     }
 
     public function relativeUrl($signed = true)
     {
-        if(empty($this->path)) throw new InvalidArgumentException('Path is empty');
+        if(empty($this->path) || $this->path === '/') throw new InvalidArgumentException('Path is empty');
         $url = $this->path;
         if($this->style) $url .= $this->separator . $this->style;
         if(!empty($this->params)) $url .= "?{$this->params}";

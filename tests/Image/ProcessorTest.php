@@ -33,7 +33,7 @@ class ProcessorTest extends TestCase
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
             parse_str(substr(base64_decode($headers['Authorization'][0]), 20), $params);
-            $this->assertSame('abc/foo.jpg', $params['f']);
+            $this->assertSame('/abc/foo.jpg', $params['f']);
             $this->assertEquals(60, $params['e'] - $params['t'], 'Default TTL in config file should be 60.', 1);
         });
         // should reset
@@ -61,7 +61,7 @@ class ProcessorTest extends TestCase
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
             parse_str(substr(base64_decode($headers['Authorization'][0]), 20), $params);
-            $this->assertSame('abc/xyz.jpg', $params['f']);
+            $this->assertSame('/abc/xyz.jpg', $params['f']);
             $this->assertEquals(150, $params['e'] - $params['t'], 'TTL should be overridden by 150', 1);
         });
         // custom download
@@ -86,7 +86,7 @@ class ProcessorTest extends TestCase
         })->absoluteUrl(true));
         $this->api->reset();
         // public custom domain download
-        $this->api->domain('https://portrait.example.com')->public()->file('bar.jpg')->download();
+        $this->api->domain('https://portrait.example.com/')->public()->file('bar.jpg')->download();
         $this->assertMyRequestUri(function(Uri $uri){
             $this->assertSame('https', $uri->getScheme());
             $this->assertSame('portrait.example.com', $uri->getHost());
