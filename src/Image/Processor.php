@@ -106,13 +106,11 @@ class Processor extends API
         return $this;
     }
 
-    /*
-     * Implement in the future
     public function chain(ProcessingChain $chain)
     {
         $this->params = $chain->queryString();
         return $this;
-    }*/
+    }
 
     public function style(string $style)
     {

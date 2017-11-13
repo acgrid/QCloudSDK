@@ -4,6 +4,7 @@ namespace QCloudSDKTests\Image;
 
 use GuzzleHttp\Psr7\Uri;
 use QCloudSDK\Core\Exceptions\InvalidArgumentException;
+use QCloudSDK\Image\ProcessingChain;
 use QCloudSDK\Image\Processor;
 use QCloudSDKTests\TestCase;
 
@@ -76,7 +77,13 @@ class ProcessorTest extends TestCase
         });
         // get signed URL
         $this->assertContains('nep.jpg?sign=', $this->api->file('nep.jpg')->absoluteUrl(true));
-        $this->assertContains('nep.jpg?exif&sign=', $this->api->file('nep.jpg')->query('exif')->absoluteUrl(true));
+        $this->assertContains('nep.jpg?custom/v/1&sign=', $this->api->file('nep.jpg')->chain(new class implements ProcessingChain{
+            public function queryString()
+            {
+                return 'custom/v/1';
+            }
+
+        })->absoluteUrl(true));
         $this->api->reset();
         // public custom domain download
         $this->api->domain('https://portrait.example.com')->public()->file('bar.jpg')->download();
