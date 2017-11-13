@@ -31,5 +31,6 @@
  * Could Object Storage (Full requests)
  * TIM (SMS&Voice, full requests and callbacks)
  * WSS (HTTPS certificates uploading)
- * Image
+ * Imaging
+   * Bucket image processing, info, EXIF, ave
    * Face detection, shaping, comparing and verification
