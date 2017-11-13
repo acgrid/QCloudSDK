@@ -24,7 +24,7 @@ class Processor extends API
      */
     protected $private = 0;
     /**
-     * @var boolean
+     * @var boolean|string
      */
     protected $cdn = false;
     /**

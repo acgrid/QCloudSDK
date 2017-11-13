@@ -45,7 +45,7 @@ abstract class API extends AbstractAPI
      */
     protected $headers;
     /**
-     * @var array
+     * @var array|string
      */
     protected $params;
 
