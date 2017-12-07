@@ -23,6 +23,18 @@ class SignatureTest extends TestCase
         $this->api = new API($this->configForTest(), $this->http);
     }
 
+    protected function assertSignedContains($needle, $signature)
+    {
+        $this->assertContains($needle, substr(base64_decode($signature), 20));
+    }
+
+    public function testFileVariation()
+    {
+        $this->assertSignedContains('f=/200001/newbucket/2/33.jpg', $this->api->signMultiEffect('2/33.jpg'));
+        $this->assertSignedContains('f=/200001/newbucket/2/33.jpg', $this->api->signMultiEffect('2//33.jpg'));
+        $this->assertSignedContains('f=/200001/newbucket/2/33/', $this->api->signMultiEffect('/2//33/'));
+    }
+
     public function testOnceSignature()
     {
         $this->assertSame('CkZ0/gWkHy3f76ER7k6yXgzq7w1hPTIwMDAwMSZiPW5ld2J1Y2tldCZrPUFLSURVZkxVRVVpZ1FpWHFtN0NWU3NwS0pudWFpSUt0eHFBdiZlPTAmdD0xNDcwNzM2OTQwJnI9NDkwMjU4OTQzJmY9LzIwMDAwMS9uZXdidWNrZXQvdGVuY2VudF90ZXN0LmpwZw==', $this->api->signOnce('tencent_test.jpg', $this->time, $this->rand));

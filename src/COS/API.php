@@ -110,7 +110,9 @@ class API extends AbstractAPI
             'e' => $expire ? $time + $expire : 0,
             't' => $time,
             'r' => $rand ?? Nonce::make(),
-            'f' => join('/', array_map('urlencode', explode('/', $file)))
+            'f' => empty($file) ? '' : '/' . join('/', array_map('urlencode', array_merge([$this->appId, $this->bucket], array_filter(explode('/', $file), function($value){
+                    return $value !== '';
+                })))) . (substr($file, -1) === '/' ? '/' : ''),
         ];
         $toSignature = join('&', array_map(function($k, $v){
             return "$k=$v";
@@ -127,7 +129,7 @@ class API extends AbstractAPI
      */
     public function signMultiEffect(string $path = '', int $ttl = 86400, int $time = null, string $rand = null)
     {
-        return $this->doSign($ttl, empty($path) ? '' : "/{$this->appId}/{$this->bucket}/{$path}", $time, $rand);
+        return $this->doSign($ttl, empty($path) ? '' : $path, $time, $rand);
     }
 
     /**
@@ -138,7 +140,7 @@ class API extends AbstractAPI
      */
     public function signOnce(string $path, int $time = null, string $rand = null)
     {
-        return $this->doSign(0, "/{$this->appId}/{$this->bucket}/{$path}", $time, $rand);
+        return $this->doSign(0, $path, $time, $rand);
     }
 
     /**
