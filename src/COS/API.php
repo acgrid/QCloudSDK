@@ -6,6 +6,7 @@ namespace QCloudSDK\COS;
 
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\BucketTrait;
+use QCloudSDK\Core\RegionTrait;
 use QCloudSDK\Facade\Config;
 use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Nonce;
@@ -20,6 +21,7 @@ class API extends AbstractAPI
     const BUCKET = 'bucket';
 
     use BucketTrait;
+    use RegionTrait;
 
     /**
      * @var string
@@ -37,10 +39,7 @@ class API extends AbstractAPI
      * @var string
      */
     protected $appSecretKey;
-    /**
-     * @var string
-     */
-    protected $appRegion;
+
     // USED FOR BUILD REQUEST
     /**
      * @var string
@@ -76,12 +75,12 @@ class API extends AbstractAPI
         $this->appId = $this->getLocalConfig(static::APP_ID);
         $this->bucket = $this->getLocalConfig(static::BUCKET);
         $this->setApiUrl();
-        $this->headers = new Collection(['Host' => "{$this->appRegion}.file.myqcloud.com"]);
+        $this->headers = new Collection(['Host' => "{$this->getRegion()}.file.myqcloud.com"]);
     }
 
     protected function setApiUrl()
     {
-        $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s.file.myqcloud.com/files/v%u/%s', $this->appRegion, $this->getLocalConfig(static::API_VERSION, 2), $this->appId));
+        $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s.file.myqcloud.com/files/v%u/%s', $this->getRegion(), $this->getLocalConfig(static::API_VERSION, 2), $this->appId));
     }
 
     /**
@@ -193,7 +192,7 @@ class API extends AbstractAPI
 
     public function getSourceUrl($path)
     {
-        return $this->getDownloadUrl("cos{$this->appRegion}", $path);
+        return $this->getDownloadUrl("cos{$this->getRegion()}", $path);
     }
 
     public function target(string $path)

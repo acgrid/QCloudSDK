@@ -23,6 +23,8 @@ class APITest extends TestCase
     {
         $this->assertSame('newbucket', $this->api->getBucket());
         $this->assertSame($this->api, $this->api->setBucket('mybucket'));
+        $this->assertSame($this->api, $this->api->setRegion('cd'));
+        $this->assertSame('cd', $this->api->getRegion());
         $this->assertInstanceOf(Collection::class, $this->api->getHeaders());
     }
 
