@@ -185,6 +185,7 @@ class File extends API
      * @link https://www.qcloud.com/document/product/436/8429
      * @param bool $cdn
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws
      */
     protected function getObject(bool $cdn)
     {

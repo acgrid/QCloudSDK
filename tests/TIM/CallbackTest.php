@@ -4,12 +4,13 @@ namespace QCloudSDKTests\TIM;
 
 
 use GuzzleHttp\Psr7\ServerRequest;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use QCloudSDK\Core\AbstractCallback;
 use QCloudSDK\TIM\SMSCallback;
 use QCloudSDK\TIM\VoiceCallback;
 
-class CallbackTest extends \PHPUnit_Framework_TestCase
+class CallbackTest extends TestCase
 {
     /**
      * @var SMSCallback
@@ -54,7 +55,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
         $this->expectResult($this->voice, new ServerRequest('POST', '/voice', [], json_encode(['voice_failure_callback' => $this->voiceFailure])), $this->voiceFailure);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->sms = new SMSCallback();
         $this->sms->onReply(function($nationCode, $mobile, $text, $time, $sign, $extend){

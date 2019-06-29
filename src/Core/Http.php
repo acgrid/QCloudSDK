@@ -23,7 +23,6 @@
 namespace QCloudSDK\Core;
 
 use QCloudSDK\Core\Exceptions\HttpException;
-use QCloudSDK\Utils\Log;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\HandlerStack;
 use Psr\Http\Message\ResponseInterface;
@@ -33,11 +32,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Http
 {
+    use DebugTrait;
     /**
      * Used to identify handler defined by client code
      * Maybe useful in the future.
      */
     const USER_DEFINED_HANDLER = 'userDefined';
+    const CONFIG_MAX_RETRIES = 'MaxRetries';
 
     /**
      * Http client.
@@ -236,14 +237,14 @@ class Http
 
         $options = array_merge(self::$defaults, $options);
 
-        Log::debug('Client Request:', compact('url', 'method', 'options'));
+        $this->debug('Client Request:', compact('url', 'method', 'options'));
 
         $options['handler'] = $this->getHandler();
 
         $response = $this->getClient()->request($method, $url, $options);
 
         $responseLength = $response->getBody()->getSize();
-        Log::debug('API response:', [
+        $this->debug('API response:', [
             'Status' => $response->getStatusCode(),
             'Reason' => $response->getReasonPhrase(),
             'Headers' => $response->getHeaders(),
@@ -267,7 +268,7 @@ class Http
             $body = $body->getBody()->__toString();
         }
 
-        Log::debug('API response raw:', compact('body'));
+        $this->debug('API response raw:', compact('body'));
 
         if (empty($body)) throw new HttpException('Empty response but JSON expected.');
 
@@ -277,7 +278,7 @@ class Http
             throw new HttpException("Failed to parse JSON: " . json_last_error_msg());
         }
 
-        Log::debug('API response decoded:', compact('contents'));
+        $this->debug('API response decoded:', compact('contents'));
 
         return $contents;
     }

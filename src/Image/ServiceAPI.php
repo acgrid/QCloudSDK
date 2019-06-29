@@ -4,6 +4,8 @@
 namespace QCloudSDK\Image;
 
 
+use Tightenco\Collect\Support\Arr;
+
 class ServiceAPI extends API
 {
     protected $bucketInURL = false;
@@ -27,7 +29,7 @@ class ServiceAPI extends API
 
     protected function setApiUrl()
     {
-        $this->apiUrl = sprintf('%s://service.%s/', $this->getLocalConfig(static::API_SCHEME, 'https'), $this->getLocalConfig(static::API_HOST, 'image.myqcloud.com'));
+        $this->apiUrl = sprintf('%s://service.%s/', Arr::get($this->config, static::CONFIG_API_SCHEME, 'https'), Arr::get($this->config, static::CONFIG_API_HOST, 'image.myqcloud.com'));
     }
 
     protected function request(string $method, string $endpoint, string $paramOption)

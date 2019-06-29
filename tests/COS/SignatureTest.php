@@ -17,15 +17,15 @@ class SignatureTest extends TestCase
 
     protected $rand = '490258943';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->api = new API($this->configForTest(), $this->http);
+        $this->api = new API(APITest::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     protected function assertSignedContains($needle, $signature)
     {
-        $this->assertContains($needle, substr(base64_decode($signature), 20));
+        $this->assertStringContainsString($needle, substr(base64_decode($signature), 20));
     }
 
     public function testFileVariation()
@@ -49,7 +49,7 @@ class SignatureTest extends TestCase
     public function testRandom()
     {
         $sign = base64_decode($this->api->signMultiEffect());
-        $this->assertContains('&t=' . intdiv(time(), 100), $sign);
+        $this->assertStringContainsString('&t=' . intdiv(time(), 100), $sign);
         $this->assertRegExp('/r=\d{5}/', $sign);
     }
 

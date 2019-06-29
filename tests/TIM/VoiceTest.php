@@ -14,10 +14,10 @@ class VoiceTest extends TestCase
      */
     protected $voice;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->voice = new Voice($this->configForTest(), $this->http);
+        $this->voice = new Voice(SMSTest::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testVerifyCode()

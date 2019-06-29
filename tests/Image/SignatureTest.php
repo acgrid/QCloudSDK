@@ -4,9 +4,8 @@ namespace QCloudSDKTests\Image;
 
 
 use QCloudSDK\Image\Processor;
-use QCloudSDKTests\TestCase;
 
-class SignatureTest extends TestCase
+class SignatureTest extends ImageTestCase
 {
     /**
      * @var Processor
@@ -26,10 +25,10 @@ class SignatureTest extends TestCase
         $this->assertSame('ewXflzgpQON2bmrX6uJ5Yr0zuOphPTEyNTI4MjE4NzEmYj10ZW5jZW50eXVuJms9QUtJRGdhb09ZaDJrT21KZldWZEg0bHBmeFNjRzJ6UExQR29LJmU9MCZ0PTE0MzYwNzcxMTUmcj0xMTE2MiZ1PTAmZj10ZW5jZW50eXVuU2lnblRlc3Q=', $this->api->signOnce($this->file, $this->time, $this->rand));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->api = new Processor($this->configForTest(), $this->http);
+        $this->api = new Processor(static::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
 }

@@ -5,19 +5,19 @@ namespace QCloudSDKTests\Core;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
 use Psr\Http\Message\RequestInterface;
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\Exceptions\ClientException;
 use QCloudSDK\Core\Exceptions\HttpException;
 use QCloudSDK\Core\Http;
-use QCloudSDK\Facade\Config;
 use QCloudSDKTests\MockClient;
 use QCloudSDKTests\TestCase;
+use Tightenco\Collect\Support\Arr;
 
 class TestAPI extends AbstractAPI
 {
-    const CONFIG_SECTION = 'test';
-
     protected $foo;
 
     protected $tapped;
@@ -44,14 +44,9 @@ class TestAPI extends AbstractAPI
         return $this->foo;
     }
 
-    public function getGlobalVersion()
+    public function getVersion()
     {
-        return $this->config->get('version', 1);
-    }
-
-    public function getLocalVersion()
-    {
-        return $this->getLocalConfig('version', 3);
+        return Arr::get($this->config, 'version', 1);
     }
 
     /**
@@ -91,23 +86,29 @@ class AbstractAPITest extends TestCase
     public function testAPI()
     {
         $http = new Http();
-        $api = new TestAPI(new Config(['debug' => true, 'version' => 2, TestAPI::CONFIG_SECTION => ['version' => 4]]), $http);
+        $api = new TestAPI(['debug' => true, 'version' => 2], $http, $this->logger);
         $this->assertTrue($api->getFoo());
         $this->assertSame($http, $api->getHttp());
-        $this->assertSame(2, $api->getGlobalVersion());
-        $this->assertSame(4, $api->getLocalVersion());
-        $bareApi = new TestAPI(new Config());
+        $this->assertSame(2, $api->getVersion());
+        $bareApi = new TestAPI([], $this->http, $this->logger);
         $bareApi->setHttp($http);
         $this->assertSame($http, $api->getHttp());
-        $this->assertSame(1, $bareApi->getGlobalVersion());
-        $this->assertSame(3, $bareApi->getLocalVersion());
+        $this->assertSame(1, $bareApi->getVersion());
+    }
+
+    public function testLogging()
+    {
+        new TestAPI([AbstractAPI::CONFIG_DEBUG => true, 'SecretId' => 'abcdefghijklmn', 'SystemKEY' => 'foo123456789', 'foo' => ['AppKey' => '87743144531']], $this->http, new Logger('Test', [$handler = new TestHandler()]));
+        $handler->hasRecordThatPasses(function($record){
+            $this->assertSame('Current config:', $record['message']);
+            $this->assertSame([AbstractAPI::CONFIG_DEBUG => true, 'SecretId' => '***jklmn', 'SystemKEY' => '***56789', 'foo' => ['AppKey' => '***44531']], $record['context']);
+        }, Logger::DEBUG);
     }
 
     public function testMiddleware()
     {
         $http = new Http();
-        $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
-        $api->setHttp($http);
+        $api = new RetryTestAPI([Http::CONFIG_MAX_RETRIES => 3], $http, $this->logger);
         $mock = MockClient::mock(MockClient::repeatResponses(4, json_encode([AbstractAPI::RESPONSE_CODE => 1000, AbstractAPI::RESPONSE_MESSAGE => 'System busy'])));
         $http->setClient(MockClient::makeFromMock($mock));
         $this->assertCount(3, $api->getHttp()->getMiddlewares());
@@ -130,8 +131,7 @@ class AbstractAPITest extends TestCase
         ]);
         $http = new Http();
         $http->setClient(MockClient::makeFromMock($mock));
-        $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
-        $api->setHttp($http);
+        $api = new RetryTestAPI([Http::CONFIG_MAX_RETRIES => 3], $http, $this->logger);
         try{
             $api->request();
             $this->fail('Should throw ClientException');
@@ -147,7 +147,7 @@ class AbstractAPITest extends TestCase
         $mock = MockClient::mock(MockClient::repeatResponses(1, 'html'));
         $http = new Http();
         $http->setClient(MockClient::makeFromMock($mock));
-        $api = new RetryTestAPI(new Config([TestAPI::CONFIG_SECTION => [Config::COMMON_MAX_RETRIES => 3]]));
+        $api = new RetryTestAPI([Http::CONFIG_MAX_RETRIES => 3], $http, $this->logger);
         $api->setHttp($http);
         try{
             $api->request();
@@ -158,8 +158,7 @@ class AbstractAPITest extends TestCase
 
     public function testSignature()
     {
-        $api = new TestAPI(new Config());
-        $api->setHttp($http = $this->getReflectedHttpWithResponse('foo'));
+        $api = new TestAPI([], $http = $this->getReflectedHttpWithResponse('foo'), $this->logger);
         $response = $api->requestSigned('get', 'www.example.org/', ['op' => 'foo']);
         $this->assertRequest($http, function(Request $request){
             $this->assertSame('https://www.example.org/?' . http_build_query(['op' => 'foo', 'sign' => 'signed for GET to www.example.org/ with param {"op":"foo"}'], null, '&', PHP_QUERY_RFC3986), strval($request->getUri()));

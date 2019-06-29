@@ -4,8 +4,8 @@ namespace QCloudSDKTests\Core;
 
 
 use QCloudSDK\Core\ActionTrait;
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\Core\GeneralSignatureTrait;
-use QCloudSDK\Facade\Config;
 use QCloudSDKTests\TestCase;
 
 class GeneralSignatureTest extends TestCase
@@ -13,12 +13,12 @@ class GeneralSignatureTest extends TestCase
     use ActionTrait;
     use GeneralSignatureTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->config = new Config([
-            Config::COMMON_SECRET_ID => 'AKIDT8G5AsY1D3MChWooNq1rFSw1fyBVCX9D',
-            Config::COMMON_SECRET_KEY => 'pxPgRWDbCy86ZYyqBTDk7WmeRZSmPco0',
-        ]);
+        $this->config = [
+            CommonConfiguration::CONFIG_SECRET_ID => 'AKIDT8G5AsY1D3MChWooNq1rFSw1fyBVCX9D',
+            CommonConfiguration::CONFIG_SECRET_KEY => 'pxPgRWDbCy86ZYyqBTDk7WmeRZSmPco0',
+        ];
     }
 
     /**
@@ -42,7 +42,7 @@ class GeneralSignatureTest extends TestCase
         $signed = $this->doSign('get', 'cdn.api.qcloud.com/v2/index.php', $params);
         $this->assertArrayHasKey('Timestamp', $signed);
         $this->assertArrayHasKey('Nonce', $signed);
-        $this->assertEquals(time(), $signed['Timestamp'], 'Timestamp is not generated as now.', 1);
+        $this->assertEqualsWithDelta(time(), $signed['Timestamp'], 1, 'Timestamp is not generated as now.');
         $this->assertRegExp('/\d{5}/', $signed['Nonce']);
     }
 

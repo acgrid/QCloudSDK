@@ -5,12 +5,13 @@ namespace QCloudSDK\Image;
 
 
 use QCloudSDK\Core\Exceptions\InvalidArgumentException;
-use QCloudSDK\Facade\Config;
+use QCloudSDK\COS\API as CosAPI;
+use Tightenco\Collect\Support\Arr;
 
 class Processor extends API
 {
-    const STYLE_SEPARATOR = 'style-separator';
-    const PRIVATE = 'private';
+    const CONFIG_STYLE_SEPARATOR = 'StyleSeparator';
+    const CONFIG_PRIVATE = 'private';
     /**
      * @var string
      */
@@ -42,15 +43,15 @@ class Processor extends API
 
     protected function init()
     {
-        $this->region = $this->getLocalConfig(Config::COMMON_REGION);
+        $this->region = Arr::get($this->config, CosAPI::CONFIG_REGION);
+        $this->private = Arr::get($this->config, static::CONFIG_PRIVATE, 0);
+        $this->separator = Arr::get($this->config, static::CONFIG_STYLE_SEPARATOR, '/');
         parent::init();
-        $this->private = $this->getLocalConfig(static::PRIVATE, 0);
-        $this->separator = $this->getLocalConfig(static::STYLE_SEPARATOR, '/');
     }
 
     protected function setApiUrl()
     {
-        $scheme = $this->getLocalConfig(static::API_SCHEME, static::DEFAULT_SCHEME);
+        $scheme = Arr::get($this->config, static::CONFIG_API_SCHEME, static::DEFAULT_SCHEME);
         $this->apiUrl = sprintf('%s://%s-%s.pic%s.myqcloud.com', $scheme, $this->bucket, $this->appId, $this->region);
         $this->cdnUrl = sprintf('%s://%s-%s.image.myqcloud.com', $scheme, $this->bucket, $this->appId);
     }

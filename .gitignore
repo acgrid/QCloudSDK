@@ -1,8 +1,8 @@
 *.DS_Store
 /vendor
 sftp-config.json
-/*.php
+.phpunit.result.cache
 /.idea
-/coverage
+/clover.xml
 /.split
 /composer.lock

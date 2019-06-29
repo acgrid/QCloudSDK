@@ -8,17 +8,17 @@ use QCloudSDK\Image\ProcessingChain;
 use QCloudSDK\Image\Processor;
 use QCloudSDKTests\TestCase;
 
-class ProcessorTest extends TestCase
+class ProcessorTest extends ImageTestCase
 {
     /**
      * @var Processor
      */
     protected $api;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->api = new Processor($this->configForTest(), $this->http);
+        $this->api = new Processor(static::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testRequest()
@@ -34,7 +34,7 @@ class ProcessorTest extends TestCase
             $this->assertArrayHasKey('Authorization', $headers);
             parse_str(substr(base64_decode($headers['Authorization'][0]), 20), $params);
             $this->assertSame('/abc/foo.jpg', $params['f']);
-            $this->assertEquals(60, $params['e'] - $params['t'], 'Default TTL in config file should be 60.', 1);
+            $this->assertEqualsWithDelta(60, $params['e'] - $params['t'], 1);
         });
         // should reset
         $this->api->public()->file('foo/bar.png')->ave();
@@ -62,7 +62,7 @@ class ProcessorTest extends TestCase
             $this->assertArrayHasKey('Authorization', $headers);
             parse_str(substr(base64_decode($headers['Authorization'][0]), 20), $params);
             $this->assertSame('/abc/xyz.jpg', $params['f']);
-            $this->assertEquals(150, $params['e'] - $params['t'], 'TTL should be overridden by 150', 1);
+            $this->assertEqualsWithDelta(150, $params['e'] - $params['t'], 1);
         });
         // custom download
         $this->api->region('sh')->bucket('portrait')->direct()->file('foo.jpg')->separator('!')->style('face')->download();
@@ -76,8 +76,8 @@ class ProcessorTest extends TestCase
             $this->assertArrayHasKey('Authorization', $headers);
         });
         // get signed URL
-        $this->assertContains('nep.jpg?sign=', $this->api->file('nep.jpg')->absoluteUrl(true));
-        $this->assertContains('nep.jpg?custom/v/1&sign=', $this->api->file('nep.jpg')->chain(new class implements ProcessingChain{
+        $this->assertStringContainsString('nep.jpg?sign=', $this->api->file('nep.jpg')->absoluteUrl(true));
+        $this->assertStringContainsString('nep.jpg?custom/v/1&sign=', $this->api->file('nep.jpg')->chain(new class implements ProcessingChain{
             public function queryString()
             {
                 return 'custom/v/1';

@@ -6,19 +6,19 @@ namespace QCloudSDK\COS;
 
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\BucketTrait;
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\Core\NonceTrait;
 use QCloudSDK\Core\RegionTrait;
-use QCloudSDK\Facade\Config;
+use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Collection;
 
 class API extends AbstractAPI
 {
-    const CONFIG_SECTION = 'cos';
-
-    const API_URL = 'ApiUrl';
-    const API_VERSION = 'ApiVersion';
-    const APP_ID = 'AppId';
-    const BUCKET = 'bucket';
+    const CONFIG_REGION = 'region';
+    const CONFIG_BUCKET = 'bucket';
+    const CONFIG_APP_ID = 'AppId';
+    const CONFIG_API_URL = 'ApiUrl';
+    const CONFIG_API_VERSION = 'ApiVersion';
 
     use BucketTrait;
     use RegionTrait;
@@ -69,19 +69,19 @@ class API extends AbstractAPI
     protected function init()
     {
         // Common or COS-only
-        $this->appSecretId = $this->getLocalConfig(Config::COMMON_SECRET_ID);
-        $this->appSecretKey = $this->getLocalConfig(Config::COMMON_SECRET_KEY);
-        $this->appRegion = $this->getLocalConfig(Config::COMMON_REGION);
+        $this->appSecretId = Arr::get($this->config, CommonConfiguration::CONFIG_SECRET_ID);
+        $this->appSecretKey = Arr::get($this->config, CommonConfiguration::CONFIG_SECRET_KEY);
+        $this->appRegion = Arr::get($this->config, self::CONFIG_REGION);
         // Only for COS
-        $this->appId = $this->getLocalConfig(static::APP_ID);
-        $this->bucket = $this->getLocalConfig(static::BUCKET);
+        $this->appId = Arr::get($this->config, self::CONFIG_APP_ID);
+        $this->bucket = Arr::get($this->config, self::CONFIG_BUCKET);
         $this->setApiUrl();
         $this->headers = new Collection(['Host' => "{$this->getRegion()}.file.myqcloud.com"]);
     }
 
     protected function setApiUrl()
     {
-        $this->apiUrl = $this->getLocalConfig(static::API_URL, sprintf('https://%s.file.myqcloud.com/files/v%u/%s', $this->getRegion(), $this->getLocalConfig(static::API_VERSION, 2), $this->appId));
+        $this->apiUrl = Arr::get($this->config, static::CONFIG_API_URL, sprintf('https://%s.file.myqcloud.com/files/v%u/%s', $this->getRegion(), Arr::get($this->config, static::CONFIG_API_VERSION, 2), $this->appId));
     }
 
     /**

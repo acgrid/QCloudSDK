@@ -7,7 +7,7 @@ namespace QCloudSDK\TIM;
 use QCloudSDK\Core\CustomDateParamTrait;
 use QCloudSDK\Core\TimestampTrait;
 
-class Status extends ServiceAPI
+class Status extends SmsAPI
 {
 
     const TYPE_DELIVERY = 0;

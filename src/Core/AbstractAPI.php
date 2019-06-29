@@ -4,9 +4,8 @@
 namespace QCloudSDK\Core;
 
 
+use Psr\Log\LoggerInterface;
 use QCloudSDK\Core\Exceptions\ClientException;
-use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Log;
 use GuzzleHttp\Middleware;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -15,7 +14,7 @@ use Tightenco\Collect\Support\Collection;
 
 abstract class AbstractAPI
 {
-    const CONFIG_SECTION = 'api';
+    const CONFIG_DEBUG = 'Debug';
 
     const RESPONSE_CODE = 'code';
     const RESPONSE_MESSAGE = 'message';
@@ -23,7 +22,7 @@ abstract class AbstractAPI
     const SUCCESS_CODE = 0;
 
     /**
-     * @var Config
+     * @var array
      */
     protected $config;
     /**
@@ -47,12 +46,16 @@ abstract class AbstractAPI
      */
     protected $signNeedEndpoint = true;
 
-    public function __construct(Config $config, Http $http = null)
+    use DebugTrait;
+
+    public function __construct(array $config, Http $http, LoggerInterface $logger)
     {
+        $this->logger = $logger;
         $this->config = $config;
-        $this->http = $http ?? new Http();
+        $this->http = $http;
         $this->retryCodes = array_flip($this->retryCodes);
-        $this->maxRetries = $this->getLocalConfig(Config::COMMON_MAX_RETRIES, 2);
+        $this->maxRetries = Arr::get($config, Http::CONFIG_MAX_RETRIES, 2);
+        if($config[self::CONFIG_DEBUG] ?? false) $this->debug('Current config:', $this->dump($config));
         $this->init();
     }
 
@@ -61,9 +64,13 @@ abstract class AbstractAPI
         // Override
     }
 
-    protected function getLocalConfig($key, $default = null)
+    private function dump(array $config)
     {
-        return Arr::get($this->config, static::CONFIG_SECTION . ".$key", Arr::get($this->config, $key, $default));
+        foreach($config as $key => $value){
+            if(is_array($value)) $config[$key] = $this->dump($config[$key]);
+            if(stripos($key, 'key') !== false || stripos($key, 'id') !== false) $config[$key] = '***'.substr($config[$key], -5);
+        }
+        return $config;
     }
 
     /**
@@ -155,8 +162,8 @@ abstract class AbstractAPI
     protected function logMiddleware()
     {
         return Middleware::tap(function (RequestInterface $request, $options) {
-            Log::debug("Request: {$request->getMethod()} {$request->getUri()} ".json_encode($options));
-            Log::debug('Request headers:'.json_encode($request->getHeaders()));
+            $this->debug("Request: {$request->getMethod()} {$request->getUri()} ".json_encode($options));
+            $this->debug('Request headers:'.json_encode($request->getHeaders()));
         });
     }
 
@@ -175,7 +182,7 @@ abstract class AbstractAPI
             // Limit the number of retries to n
             if (++$retries <= $this->maxRetries && isset($response) && $response->getBody()->getSize() < 1048576) {
                 if(preg_match('/' . preg_quote(json_encode(static::RESPONSE_CODE), '/') . ':\s*(\d+)/', strval($response->getBody()), $match) && isset($this->retryCodes[$match[1]])){
-                    Log::debug("Request to {$request->getUri()->getPath()} Result Code {$match[1]}, Retry count {$retries}.");
+                    $this->debug("Request to {$request->getUri()->getPath()} Result Code {$match[1]}, Retry count {$retries}.");
                     return true;
                 }
             }

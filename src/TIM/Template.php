@@ -7,7 +7,7 @@ namespace QCloudSDK\TIM;
 
 use QCloudSDK\Core\IntegerArrayTrait;
 
-class Template extends ServiceAPI
+class Template extends SmsAPI
 {
 
     use IntegerArrayTrait;

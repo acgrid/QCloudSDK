@@ -145,9 +145,9 @@ namespace QCloudSDKTests\Core {
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('http://example.org?op=upload', $request->getUri()->__toString());
                 $body = strval($request->getBody());
-                $this->assertContains($this->makeFormData('foo', 'bar'), $body);
-                $this->assertContains($this->makeFormData('hello', 'world'), $body);
-                $this->assertContains($this->makeFormData('var', 'poi'), $body);
+                $this->assertStringContainsString($this->makeFormData('foo', 'bar'), $body);
+                $this->assertStringContainsString($this->makeFormData('hello', 'world'), $body);
+                $this->assertStringContainsString($this->makeFormData('var', 'poi'), $body);
             });
 
         }

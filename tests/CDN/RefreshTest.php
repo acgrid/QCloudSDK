@@ -13,6 +13,12 @@ class RefreshTest extends TestCase
      */
     protected $refresh;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->refresh = new Refresh(static::EXAMPLE_CONFIG, $this->http, $this->logger);
+    }
+
     public function testRequest()
     {
         $this->http->setClient(MockClient::makeJson([Refresh::RESPONSE_CODE => Refresh::SUCCESS_CODE, Refresh::RESPONSE_MESSAGE => 'OK', 'data' => ['count' => 2, 'task_id' => 998]]));
@@ -39,13 +45,6 @@ class RefreshTest extends TestCase
         $response2 = $this->refresh->queryByUrl('http://www.example.org/')->all();
         $this->assertSame($response1, $response2);
         $this->assertSame($logs, $response2);
-    }
-
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->refresh = new Refresh($this->configForTest(), $this->http);
     }
 
 }

@@ -17,7 +17,7 @@ filter:
         - 'tests/*'
 build:
     environment:
-        php: '7.1.12'
+        php: '7.3.6'
     tests:
         override:
             -

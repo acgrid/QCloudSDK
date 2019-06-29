@@ -5,9 +5,8 @@ namespace QCloudSDKTests\Image;
 use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\Uri;
 use QCloudSDK\Image\Face;
-use QCloudSDKTests\TestCase;
 
-class FaceTest extends TestCase
+class FaceTest extends ImageTestCase
 {
     /**
      * @var Face
@@ -32,8 +31,8 @@ class FaceTest extends TestCase
     {
         $this->api->detect(__FILE__, Face::DETECT_ALL_FACES);
         $this->assertMyRequestBody(function($body){
-            $this->assertContains($this->makeFormData('mode', Face::DETECT_ALL_FACES), $body);
-            $this->assertContains($this->makeFormData('image', file_get_contents(__FILE__), basename(__FILE__)), $body);
+            $this->assertStringContainsString($this->makeFormData('mode', Face::DETECT_ALL_FACES), $body);
+            $this->assertStringContainsString($this->makeFormData('image', file_get_contents(__FILE__), basename(__FILE__)), $body);
         });
     }
 
@@ -42,7 +41,7 @@ class FaceTest extends TestCase
         $content = file_get_contents(__FILE__);
         $this->api->detect(stream_for($content));
         $this->assertMyRequestBody(function($body) use ($content) {
-            $this->assertContains($this->makeFormData('image', $content), $body);
+            $this->assertStringContainsString($this->makeFormData('image', $content), $body);
         });
     }
 
@@ -50,7 +49,7 @@ class FaceTest extends TestCase
     {
         $this->api->detect($content = 'Pretend I am a PNG file.');
         $this->assertMyRequestBody(function($body) use ($content) {
-            $this->assertContains($this->makeFormData('image', $content), $body);
+            $this->assertStringContainsString($this->makeFormData('image', $content), $body);
         });
     }
 
@@ -91,15 +90,15 @@ class FaceTest extends TestCase
             $this->assertSame('http://service.test.image.myqcloud.com/face/compare', $uri->__toString());
         });
         $this->assertMyRequestBody(function($body) use ($a, $b) {
-            $this->assertContains($this->makeFormData('imageA', $a), $body);
-            $this->assertContains($this->makeFormData('imageB', $b), $body);
+            $this->assertStringContainsString($this->makeFormData('imageA', $a), $body);
+            $this->assertStringContainsString($this->makeFormData('imageB', $b), $body);
         });
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->api = new Face($this->configForTest(), $this->http);
+        $this->api = new Face(static::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
 }

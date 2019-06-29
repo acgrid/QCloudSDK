@@ -7,15 +7,15 @@ namespace QCloudSDK\CDN;
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\ActionTrait;
 use QCloudSDK\Core\ArrayParamTrait;
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\Core\DateTimeTrait;
 use QCloudSDK\Core\GeneralSignatureTrait;
 use QCloudSDK\Core\JsonParamTrait;
 use QCloudSDK\Core\OnOffParamTrait;
-use QCloudSDK\Facade\Config;
+use Tightenco\Collect\Support\Arr;
 
 class API extends AbstractAPI
 {
-    const CONFIG_SECTION = 'cdn';
 
     const QUERY_PROJECT = 'projects';
     const QUERY_HOST = 'hosts';
@@ -53,7 +53,8 @@ class API extends AbstractAPI
 
     protected function request(array $params)
     {
-        return $this->parseJSONSigned('post', $this->getLocalConfig(Config::MODULE_COMMON_ENDPOINT, 'cdn.api.qcloud.com/v2/index.php'), $params);
+        return $this->parseJSONSigned('post',
+            Arr::get($this->config, CommonConfiguration::CONFIG_API_URL, 'cdn.api.qcloud.com/v2/index.php'), $params);
     }
 
     protected function makePeriodParam(int $period)

@@ -13,10 +13,10 @@ class DirectoryTest extends TestCase
      */
     protected $api;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->api = new Directory($this->configForTest(), $this->http);
+        $this->api = new Directory(APITest::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testCreate()
@@ -26,7 +26,7 @@ class DirectoryTest extends TestCase
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
             $this->assertArrayHasKey('Host', $headers);
-            $this->assertContains('a=200001&b=newbucket', $signature = base64_decode($headers['Authorization'][0]));
+            $this->assertStringContainsString('a=200001&b=newbucket', $signature = base64_decode($headers['Authorization'][0]));
             $this->assertStringEndsWith('f=', $signature);
             $this->assertSame('gz.file.myqcloud.com', $headers['Host'][0]);
         });

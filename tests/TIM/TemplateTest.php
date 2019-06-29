@@ -14,10 +14,10 @@ class TemplateTest extends TestCase
      */
     protected $template;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->template = new Template($this->configForTest(), $this->http);
+        $this->template = new Template(SMSTest::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testAdd()

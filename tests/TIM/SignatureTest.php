@@ -13,10 +13,10 @@ class SignatureTest extends TestCase
      */
     protected $signature;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->signature = new Signature($this->configForTest(), $this->http);
+        $this->signature = new Signature(SMSTest::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testAdd()

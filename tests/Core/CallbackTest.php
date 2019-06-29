@@ -3,10 +3,11 @@
 namespace QCloudSDKTests\Core;
 
 use GuzzleHttp\Psr7\ServerRequest;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use QCloudSDKTests\Callback;
 
-class CallbackTest extends \PHPUnit_Framework_TestCase
+class CallbackTest extends TestCase
 {
     /**
      * @var \QCloudSDKTests\Callback
@@ -19,7 +20,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
 
     protected $touched = false;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->handler = new Callback();
         $this->handler->onA(function($data){

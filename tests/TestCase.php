@@ -6,49 +6,33 @@ namespace QCloudSDKTests;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\Core\Http;
-use QCloudSDK\Facade\Config;
 
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends \PHPUnit\Framework\TestCase
 {
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
     /**
      * @var Http
      */
     protected $http;
 
-    protected function setUp()
+    const EXAMPLE_CONFIG = [
+        CommonConfiguration::CONFIG_SECRET_ID => 'foo',
+        CommonConfiguration::CONFIG_SECRET_KEY => 'bar',
+    ];
+
+    protected function setUp(): void
     {
         $this->http = $this->getReflectedHttp();
-    }
-
-    protected function configForTest()
-    {
-        return new Config([
-            Config::COMMON_SECRET_ID => 'foo',
-            Config::COMMON_SECRET_KEY => 'bar',
-            'cos' => [
-                'AppId' => '200001',
-                'bucket' => 'newbucket',
-                Config::COMMON_SECRET_ID => 'AKIDUfLUEUigQiXqm7CVSspKJnuaiIKtxqAv',
-                Config::COMMON_SECRET_KEY => 'bLcPnl88WU30VY57ipRhSePfPdOfSruK',
-                Config::COMMON_REGION => 'gz',
-            ],
-            'tim' => [
-                'AppId' => '100032221',
-                'AppKey' => 'dffdfd6029698a5fdf4',
-            ],
-            'image' => [
-                'AppId' => '1252821871',
-                'bucket' => 'tencentyun',
-                Config::COMMON_SECRET_ID => 'AKIDgaoOYh2kOmJfWVdH4lpfxScG2zPLPGoK',
-                Config::COMMON_SECRET_KEY => 'nwOKDouy5JctNOlnere4gkVoOUz5EYAb',
-                Config::COMMON_REGION => 'gz',
-                'ApiScheme' => 'http',
-                'ApiHost' => 'test.image.myqcloud.com',
-                'private' => 60,
-                'style-separator' => '!',
-            ],
-        ]);
+        $this->logger = new Logger('Test', [new TestHandler()]);
     }
 
     protected function createParam($key, $action)
@@ -128,7 +112,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * Tear down the test case.
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->finish();
         parent::tearDown();

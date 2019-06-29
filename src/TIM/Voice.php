@@ -4,9 +4,11 @@
 namespace QCloudSDK\TIM;
 
 
+use Tightenco\Collect\Support\Arr;
+
 class Voice extends API
 {
-    const VOICE_ENDPOINT = 'VoiceEndpoint';
+    const CONFIG_ENDPOINT = 'VoiceEndpoint';
 
     const TEMPLATE_TYPE = 2; // WTF? Appeared in https://www.qcloud.com/document/product/382/8649
 
@@ -22,7 +24,7 @@ class Voice extends API
     protected function init()
     {
         parent::init();
-        $this->endpoint = $this->endpoint . $this->getLocalConfig(self::VOICE_ENDPOINT, 'v5/tlsvoicesvr/');
+        $this->endpoint = $this->endpoint . Arr::get($this->config, self::CONFIG_ENDPOINT, 'v5/tlsvoicesvr/');
     }
 
     /**

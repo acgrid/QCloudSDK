@@ -13,10 +13,15 @@ class SMSTest extends TestCase
      */
     protected $sms;
 
-    protected function setUp()
+    const EXAMPLE_CONFIG = [
+        'AppId' => '100032221',
+        'AppKey' => 'dffdfd6029698a5fdf4',
+    ];
+
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->sms = new SMS($this->configForTest(), $this->http);
+        $this->sms = new SMS(static::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testSig()
@@ -32,7 +37,7 @@ class SMSTest extends TestCase
         $params = $this->sms->signForMobile('13012345789', $altRandom);
         $this->assertRegExp('/\d{5}/', $altRandom);
         $this->assertArrayHasKey('time', $params);
-        $this->assertEquals(time(), $params['time'], '', 1);
+        $this->assertEqualsWithDelta(time(), $params['time'], 1);
     }
 
     public function testSendSingle()
@@ -45,7 +50,7 @@ class SMSTest extends TestCase
 
         $this->sms->useNormal('A sms packet.')->setExtend('WTF')->setExt('poi')->sendTo('13912345678');
         $this->assertMyRequestUri(function(Uri $uri){
-            $this->assertContains('sendsms', $uri->getPath());
+            $this->assertStringContainsString('sendsms', $uri->getPath());
             parse_str($uri->getQuery(), $query);
             $this->assertArrayHasKey('sdkappid', $query);
             $this->assertArrayHasKey('random', $query);
@@ -69,7 +74,7 @@ class SMSTest extends TestCase
 
         $this->sms->setSign('SOS')->useTemplate(2048, ['验证码', 1334])->setExtend('VERITY')->sendTo('+8165243031');
         $this->assertMyRequestUri(function(Uri $uri){
-            $this->assertContains('sendisms', $uri->getPath());
+            $this->assertStringContainsString('sendisms', $uri->getPath());
         });
         $this->assertMyRequestJson(function($json){
             $this->assertSame('+8165243031', $json['tel']);
@@ -94,7 +99,7 @@ class SMSTest extends TestCase
         }catch (\InvalidArgumentException $e) {}
         $this->sms->setSign('SOS')->useTemplate(2048, ['验证码', '1334'])->setExtend('VERITY')->sendMulti(['13198765432', '13300001234']);
         $this->assertMyRequestUri(function(Uri $uri){
-            $this->assertContains('sendmultisms2', $uri->getPath());
+            $this->assertStringContainsString('sendmultisms2', $uri->getPath());
         });
         $this->assertMyRequestJson(function($json){
             $this->assertSame([

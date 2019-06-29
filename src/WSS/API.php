@@ -6,13 +6,13 @@ namespace QCloudSDK\WSS;
 
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\ActionTrait;
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\Core\GeneralSignatureTrait;
-use QCloudSDK\Facade\Config;
+use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Collection;
 
 class API extends AbstractAPI
 {
-    const CONFIG_SECTION = 'wss';
 
     use ActionTrait;
     use GeneralSignatureTrait;
@@ -23,7 +23,7 @@ class API extends AbstractAPI
 
     protected function request(array $params)
     {
-        return $this->parseJSONSigned('post', $this->getLocalConfig(Config::MODULE_COMMON_ENDPOINT, 'wss.api.qcloud.com/v2/index.php'), $params);
+        return $this->parseJSONSigned('post', Arr::get($this->config, CommonConfiguration::CONFIG_API_URL, 'wss.api.qcloud.com/v2/index.php'), $params);
     }
 
     /**

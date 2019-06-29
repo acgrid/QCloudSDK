@@ -13,10 +13,10 @@ class StatusTest extends TestCase
      */
     protected $status;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->status = new Status($this->configForTest(), $this->http);
+        $this->status = new Status(SMSTest::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testSingleStatus()
@@ -38,12 +38,11 @@ class StatusTest extends TestCase
 
     public function testMultiStatus()
     {
-        $time = time();
         $this->status->queryReply()->pullMultiStatus(20);
         $this->assertMyRequestUri(function (Uri $uri){
             $this->assertStringEndsWith('pullstatus', $uri->getPath());
         });
-        $this->assertMyRequestJson(function ($json) use ($time) {
+        $this->assertMyRequestJson(function ($json) {
             $this->assertSame(Status::TYPE_REPLY, $json['type']);
             $this->assertSame(20, $json['max']);
         });

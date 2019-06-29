@@ -7,7 +7,7 @@ namespace QCloudSDK\TIM;
 
 use QCloudSDK\Core\IntegerArrayTrait;
 
-class Signature extends ServiceAPI
+class Signature extends SmsAPI
 {
 
     use IntegerArrayTrait;

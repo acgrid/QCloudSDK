@@ -6,18 +6,17 @@ namespace QCloudSDK\Image;
 
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\BucketTrait;
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\Core\NonceTrait;
-use QCloudSDK\Facade\Config;
+use QCloudSDK\COS\API as CosAPI;
+use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Collection;
 
 abstract class API extends AbstractAPI
 {
-    const CONFIG_SECTION = 'image';
 
-    const API_HOST = 'ApiHost';
-    const API_SCHEME = 'ApiScheme';
-    const APP_ID = 'AppId';
-    const BUCKET = 'bucket';
+    const CONFIG_API_HOST = 'ApiHost';
+    const CONFIG_API_SCHEME = 'ApiScheme';
 
     const DEFAULT_SCHEME = 'https';
     const DEFAULT_HOST = 'image.myqcloud.com';
@@ -53,11 +52,11 @@ abstract class API extends AbstractAPI
     protected function init()
     {
         // Common or COS-only
-        $this->appSecretId = $this->getLocalConfig(Config::COMMON_SECRET_ID);
-        $this->appSecretKey = $this->getLocalConfig(Config::COMMON_SECRET_KEY);
+        $this->appSecretId = Arr::get($this->config, CommonConfiguration::CONFIG_SECRET_ID);
+        $this->appSecretKey = Arr::get($this->config, CommonConfiguration::CONFIG_SECRET_KEY);
         // Only for COS
-        $this->appId = $this->getLocalConfig(static::APP_ID);
-        $this->bucket = $this->getLocalConfig(static::BUCKET);
+        $this->appId = Arr::get($this->config, CosAPI::CONFIG_APP_ID);
+        $this->bucket = Arr::get($this->config, CosAPI::CONFIG_BUCKET);
         $this->setApiUrl();
         $this->headers = new Collection();
     }

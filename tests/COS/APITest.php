@@ -2,6 +2,7 @@
 
 namespace QCloudSDKTests\COS;
 
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\COS\API;
 use QCloudSDKTests\TestCase;
 use Tightenco\Collect\Support\Collection;
@@ -13,10 +14,18 @@ class APITest extends TestCase
      */
     protected $api;
 
-    protected function setUp()
+    const EXAMPLE_CONFIG = [
+        CommonConfiguration::CONFIG_SECRET_ID => 'AKIDUfLUEUigQiXqm7CVSspKJnuaiIKtxqAv',
+        CommonConfiguration::CONFIG_SECRET_KEY => 'bLcPnl88WU30VY57ipRhSePfPdOfSruK',
+        API::CONFIG_APP_ID => '200001',
+        API::CONFIG_BUCKET => 'newbucket',
+        API::CONFIG_REGION => 'gz',
+    ];
+
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->api = new API($this->configForTest(), $this->http);
+        $this->api = new API(static::EXAMPLE_CONFIG, $this->http, $this->logger);
     }
 
     public function testUtilities()

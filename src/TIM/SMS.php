@@ -4,9 +4,8 @@
 namespace QCloudSDK\TIM;
 
 
-class SMS extends API
+class SMS extends SmsAPI
 {
-    const SMS_ENDPOINT = 'SmsEndpoint';
 
     const TYPE_NORMAL = 0;
     const TYPE_PROMOTION = 1;
@@ -42,12 +41,6 @@ class SMS extends API
      * @var string
      */
     protected $ext;
-
-    protected function init()
-    {
-        parent::init();
-        $this->endpoint = $this->endpoint . $this->getLocalConfig(self::SMS_ENDPOINT, 'v5/tlssmssvr/');
-    }
 
     public function setSign($sign)
     {

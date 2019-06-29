@@ -5,12 +5,12 @@ namespace QCloudSDK\TIM;
 
 
 use QCloudSDK\Core\AbstractAPI;
+use QCloudSDK\Core\CommonConfiguration;
 use QCloudSDK\Core\NonceTrait;
-use QCloudSDK\Facade\Config;
+use Tightenco\Collect\Support\Arr;
 
 abstract class API extends AbstractAPI
 {
-    const CONFIG_SECTION = 'tim';
 
     protected $signNeedEndpoint = false;
 
@@ -25,16 +25,16 @@ abstract class API extends AbstractAPI
     const RESPONSE_CODE = 'result';
     const RESPONSE_MESSAGE = 'errmsg';
 
-    const APP_ID = 'AppId';
-    const APP_KEY = 'AppKey';
+    const CONFIG_APP_ID = 'AppId';
+    const CONFIG_APP_KEY = 'AppKey';
 
     use NonceTrait;
 
     protected function init()
     {
-        $this->appId = $this->getLocalConfig(static::APP_ID);
-        $this->appKey = $this->getLocalConfig(static::APP_KEY);
-        $this->endpoint = $this->getLocalConfig(Config::MODULE_COMMON_ENDPOINT, "yun.tim.qq.com/");
+        $this->appId = Arr::get($this->config, static::CONFIG_APP_ID);
+        $this->appKey = Arr::get($this->config, static::CONFIG_APP_KEY);
+        $this->endpoint = Arr::get($this->config, CommonConfiguration::CONFIG_API_URL, "yun.tim.qq.com/");
     }
 
     protected function request($endpoint, string $random, array $params)
