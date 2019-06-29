@@ -5,8 +5,8 @@ namespace QCloudSDK\TIM;
 
 
 use QCloudSDK\Core\AbstractAPI;
+use QCloudSDK\Core\NonceTrait;
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Nonce;
 
 abstract class API extends AbstractAPI
 {
@@ -27,6 +27,8 @@ abstract class API extends AbstractAPI
 
     const APP_ID = 'AppId';
     const APP_KEY = 'AppKey';
+
+    use NonceTrait;
 
     protected function init()
     {
@@ -63,7 +65,7 @@ abstract class API extends AbstractAPI
 
     protected function commonSignature(&$random, int &$time = null)
     {
-        if(!isset($random)) $random = Nonce::make();
+        if(!isset($random)) $random = $this->makeNonce();
         if(!isset($time)) $time = time();
         return "appkey={$this->appKey}&random=$random&time=$time";
     }

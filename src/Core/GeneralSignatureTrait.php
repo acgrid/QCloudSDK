@@ -5,7 +5,6 @@ namespace QCloudSDK\Core;
 
 
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Nonce;
 
 trait GeneralSignatureTrait
 {
@@ -14,9 +13,11 @@ trait GeneralSignatureTrait
      */
     protected $config;
 
+    use NonceTrait;
+
     protected function doSign(string $method, string $endpoint, array $params)
     {
-        if(!isset($params['Nonce'])) $params['Nonce'] = Nonce::make();
+        if(!isset($params['Nonce'])) $params['Nonce'] = $this->makeNonce();
         if(!isset($params['Timestamp'])) $params['Timestamp'] = time();
         $params['SecretId'] = $this->config->get(Config::COMMON_SECRET_ID);
         ksort($params);

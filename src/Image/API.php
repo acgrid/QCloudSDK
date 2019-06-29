@@ -6,8 +6,8 @@ namespace QCloudSDK\Image;
 
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\BucketTrait;
+use QCloudSDK\Core\NonceTrait;
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Nonce;
 use Tightenco\Collect\Support\Collection;
 
 abstract class API extends AbstractAPI
@@ -23,6 +23,7 @@ abstract class API extends AbstractAPI
     const DEFAULT_HOST = 'image.myqcloud.com';
 
     use BucketTrait;
+    use NonceTrait;
 
     /**
      * @var string
@@ -78,7 +79,7 @@ abstract class API extends AbstractAPI
             'k' => $this->appSecretId,
             'e' => $expire ? $time + $expire : 0,
             't' => $time,
-            'r' => $rand ?? Nonce::make(),
+            'r' => $rand ?? $this->makeNonce(),
             'u' => 0,
             'f' => $file
         ];

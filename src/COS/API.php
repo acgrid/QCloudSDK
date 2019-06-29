@@ -6,9 +6,9 @@ namespace QCloudSDK\COS;
 
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\BucketTrait;
+use QCloudSDK\Core\NonceTrait;
 use QCloudSDK\Core\RegionTrait;
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Nonce;
 use Tightenco\Collect\Support\Collection;
 
 class API extends AbstractAPI
@@ -22,6 +22,7 @@ class API extends AbstractAPI
 
     use BucketTrait;
     use RegionTrait;
+    use NonceTrait;
 
     /**
      * @var string
@@ -108,7 +109,7 @@ class API extends AbstractAPI
             'k' => $this->appSecretId,
             'e' => $expire ? $time + $expire : 0,
             't' => $time,
-            'r' => $rand ?? Nonce::make(),
+            'r' => $rand ?? $this->makeNonce(),
             'f' => empty($file) ? '' : '/' . join('/', array_map('urlencode', array_merge([$this->appId, $this->bucket], array_filter(explode('/', $file), function($value){
                     return $value !== '';
                 })))) . (substr($file, -1) === '/' ? '/' : ''),
