@@ -4,7 +4,8 @@
 namespace QCloudSDK\CDN;
 
 
-use QCloudSDK\Utils\Collection;
+
+use Tightenco\Collect\Support\Collection;
 
 class Refresh extends API
 {

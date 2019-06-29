@@ -23,7 +23,7 @@ class Face extends ServiceAPI
      * @param $image
      * @param int $mode
      * @link https://cloud.tencent.com/document/product/460/7401
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function detect($image, int $mode = self::DETECT_BIGGEST_FACE)
     {
@@ -35,7 +35,7 @@ class Face extends ServiceAPI
      * @param $image
      * @param int $mode
      * @link https://cloud.tencent.com/document/product/460/7400
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function shape($image, int $mode = self::DETECT_BIGGEST_FACE)
     {
@@ -47,7 +47,7 @@ class Face extends ServiceAPI
      * @param $image
      * @param $person_id
      * @link https://cloud.tencent.com/document/product/460/8107
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function verify($image, $person_id)
     {
@@ -60,7 +60,7 @@ class Face extends ServiceAPI
      * @param $imageA
      * @param $imageB
      * @link https://cloud.tencent.com/document/product/460/6897
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      * @throws InvalidArgumentException
      */
     public function compare($imageA, $imageB)

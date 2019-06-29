@@ -4,7 +4,8 @@
 namespace QCloudSDK\Facade;
 
 
-use QCloudSDK\Utils\Collection;
+
+use Tightenco\Collect\Support\Collection;
 
 class Config extends Collection
 {

@@ -7,8 +7,8 @@ namespace QCloudSDK\Image;
 use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\BucketTrait;
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Nonce;
+use Tightenco\Collect\Support\Collection;
 
 abstract class API extends AbstractAPI
 {

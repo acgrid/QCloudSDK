@@ -10,7 +10,7 @@ class Directory extends API
      * @link https://www.qcloud.com/document/product/436/6061
      * @param string $name
      * @param string|null $biz_attr
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function create(string $name, string $biz_attr = null)
     {
@@ -22,7 +22,7 @@ class Directory extends API
      * @param string $path
      * @param int $num
      * @param string|null $context
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function ls(string $path = '', int $num = 1000, string $context = null)
     {
@@ -32,7 +32,7 @@ class Directory extends API
     /**
      * @link https://www.qcloud.com/document/product/436/6063
      * @param string $directory
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function stat(string $directory)
     {
@@ -42,7 +42,7 @@ class Directory extends API
     /**
      * @link https://www.qcloud.com/document/product/436/6064
      * @param string $directory
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function delete(string $directory)
     {

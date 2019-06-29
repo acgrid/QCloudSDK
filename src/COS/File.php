@@ -6,6 +6,7 @@ namespace QCloudSDK\COS;
 
 use QCloudSDK\Core\Exceptions\InvalidArgumentException;
 use QCloudSDK\Core\FormDataTrait;
+use Tightenco\Collect\Support\Collection;
 
 class File extends API
 {
@@ -32,7 +33,7 @@ class File extends API
      * @param string $filecontent
      * @param string|null $biz_attr
      * @param boolean $insertOnly
-     * @return \QCloudSDK\Utils\Collection
+     * @return Collection
      * @throws InvalidArgumentException
      */
     public function uploadString(string $path, string $filecontent, string $biz_attr = null, $insertOnly = null)
@@ -50,7 +51,7 @@ class File extends API
      * @param string $localFile
      * @param string|null $biz_attr
      * @param boolean $insertOnly
-     * @return \QCloudSDK\Utils\Collection
+     * @return Collection
      * @throws InvalidArgumentException
      */
     public function uploadFile(string $path, string $localFile, string $biz_attr = null, $insertOnly = null)
@@ -72,7 +73,7 @@ class File extends API
      * @param int $sliceSize
      * @param string|null $biz_attr
      * @param boolean $insertOnly
-     * @return \QCloudSDK\Utils\Collection
+     * @return Collection
      */
     public function uploadSliceInit(
         string $path,
@@ -91,7 +92,7 @@ class File extends API
      * @param string $filecontent
      * @param string $session
      * @param int $offset
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function uploadSliceData(string $path, string $filecontent, string $session, int $offset)
     {
@@ -104,7 +105,7 @@ class File extends API
      * @param string $path
      * @param string $session
      * @param int $filesize
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function uploadSliceFinish(string $path, string $session, int $filesize)
     {
@@ -115,7 +116,7 @@ class File extends API
     /**
      * @link https://www.qcloud.com/document/product/436/6070
      * @param string $path
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function uploadSliceList(string $path)
     {
@@ -127,7 +128,7 @@ class File extends API
      * @param string $srcPath
      * @param string $destPath
      * @param boolean $overwrite
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function move(string $srcPath, string $destPath, $overwrite = null)
     {
@@ -140,7 +141,7 @@ class File extends API
      * @param string $srcPath
      * @param string $destPath
      * @param boolean $overwrite
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function copy(string $srcPath, string $destPath, $overwrite = null)
     {
@@ -151,7 +152,7 @@ class File extends API
     /**
      * @link https://www.qcloud.com/document/product/436/6069
      * @param string $path
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function stat(string $path)
     {
@@ -162,7 +163,7 @@ class File extends API
      * @link https://www.qcloud.com/document/product/436/6072
      * @param string $path
      * @param array $params
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function update(string $path, array $params)
     {
@@ -173,7 +174,7 @@ class File extends API
     /**
      * @link https://www.qcloud.com/document/product/436/6073
      * @param string $path
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function delete(string $path)
     {

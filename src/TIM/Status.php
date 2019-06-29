@@ -42,7 +42,7 @@ class Status extends ServiceAPI
     /**
      * @link https://www.qcloud.com/document/product/382/5810
      * @param int $max
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function pullMultiStatus(int $max)
     {
@@ -58,7 +58,7 @@ class Status extends ServiceAPI
      * @param $beginTime
      * @param $endTime
      * @param int $max
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function pullSingleStatus(string $nationcode, string $mobile, $beginTime, $endTime, int $max)
     {
@@ -73,7 +73,7 @@ class Status extends ServiceAPI
      * @param string $endpoint
      * @param int $begin_date
      * @param int $end_date
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     protected function requestStatus(string $endpoint, int $begin_date, int $end_date)
     {
@@ -85,7 +85,7 @@ class Status extends ServiceAPI
      * @link https://www.qcloud.com/document/product/382/7755
      * @param $beginHour
      * @param $endHour
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function pullSendStatus($beginHour, $endHour)
     {
@@ -96,7 +96,7 @@ class Status extends ServiceAPI
      * @link https://www.qcloud.com/document/product/382/7756
      * @param $beginHour
      * @param $endHour
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function pullCallbackStatus($beginHour, $endHour)
     {

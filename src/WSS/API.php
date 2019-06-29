@@ -8,7 +8,7 @@ use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\ActionTrait;
 use QCloudSDK\Core\GeneralSignatureTrait;
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Collection;
+use Tightenco\Collect\Support\Collection;
 
 class API extends AbstractAPI
 {

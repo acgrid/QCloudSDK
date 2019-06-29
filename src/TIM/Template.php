@@ -18,7 +18,7 @@ class Template extends ServiceAPI
      * @param string $title
      * @param string $text
      * @param string $remark
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     protected function add(int $type, string $title, string $text, string $remark)
     {
@@ -43,7 +43,7 @@ class Template extends ServiceAPI
      * @param string $title
      * @param string $text
      * @param string $remark
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function mod(int $tpl_id, int $type, string $title, string $text, string $remark)
     {
@@ -59,7 +59,7 @@ class Template extends ServiceAPI
     /**
      * @link https://www.qcloud.com/document/product/382/5818
      * @param $idList
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function delete($idList)
     {
@@ -70,7 +70,7 @@ class Template extends ServiceAPI
     /**
      * @link https://www.qcloud.com/document/product/382/5819
      * @param $idList
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getSpecified($idList)
     {
@@ -82,7 +82,7 @@ class Template extends ServiceAPI
      * @link https://www.qcloud.com/document/product/382/5819
      * @param int $offset
      * @param int $max
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getPaged(int $offset = 0, int $max = 50)
     {

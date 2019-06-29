@@ -131,7 +131,7 @@ class SMS extends API
      * @see https://www.qcloud.com/document/product/382/5806
      * @see https://www.qcloud.com/document/product/382/5977
      * @param array $domesticNumbers
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function sendMulti(array $domesticNumbers)
     {
@@ -148,7 +148,7 @@ class SMS extends API
      * @see https://www.qcloud.com/document/product/382/8716
      * @param string $nationCodeOrInternationalNumberOrDomesticNumber
      * @param string|null $localNumber
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function sendTo(string $nationCodeOrInternationalNumberOrDomesticNumber, string $localNumber = null)
     {

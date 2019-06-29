@@ -8,8 +8,8 @@ use QCloudSDK\Core\AbstractAPI;
 use QCloudSDK\Core\BucketTrait;
 use QCloudSDK\Core\RegionTrait;
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Nonce;
+use Tightenco\Collect\Support\Collection;
 
 class API extends AbstractAPI
 {
@@ -205,14 +205,14 @@ class API extends AbstractAPI
     public function targetOnceSigned(string $path)
     {
         $this->target($path);
-        $this->headers->set('Authorization', $this->signOnce($path));
+        $this->headers->offsetSet('Authorization', $this->signOnce($path));
         return $this;
     }
 
     public function targetSigned(string $path)
     {
         $this->target($path);
-        $this->headers->set('Authorization', $this->signMultiEffect());
+        $this->headers->offsetSet('Authorization', $this->signMultiEffect());
         return $this;
     }
 

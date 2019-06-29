@@ -75,7 +75,7 @@ class API extends AbstractAPI
      * @param int $projectId
      * @param string $type
      * @param string|array|null $origin
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function addCdnHost(string $host, int $projectId, string $type, $origin = null)
     {
@@ -88,7 +88,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/1402
      * @param int $hostId
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function onlineHost(int $hostId)
     {
@@ -98,7 +98,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/1403
      * @param int $hostId
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function offlineHost(int $hostId)
     {
@@ -108,7 +108,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/1396
      * @param int $hostId
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function deleteCdnHost(int $hostId)
     {
@@ -120,7 +120,7 @@ class API extends AbstractAPI
      * @param int $hostId
      * @param string $host
      * @param string|array $origin
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function updateCdnHost(int $hostId, string $host, $origin)
     {
@@ -133,7 +133,7 @@ class API extends AbstractAPI
      * @param int $hostId
      * @param int $projectId
      * @param array $params Detailed params
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function updateCdnConfig(int $hostId, int $projectId, array $params)
     {
@@ -149,7 +149,7 @@ class API extends AbstractAPI
      * @link https://www.qcloud.com/document/api/228/3934
      * @param int $hostId
      * @param $cache
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function updateCache(int $hostId, $cache)
     {
@@ -162,7 +162,7 @@ class API extends AbstractAPI
      * @link https://www.qcloud.com/document/api/228/3935
      * @param int $hostId
      * @param int $projectId
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function updateCdnProject(int $hostId, int $projectId)
     {
@@ -172,7 +172,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/3939
      * @param array|int $ids
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getHostInfoById($ids)
     {
@@ -182,7 +182,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/3938
      * @param array|string $hosts
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getHostInfoByHost($hosts)
     {
@@ -193,7 +193,7 @@ class API extends AbstractAPI
      * @link https://www.qcloud.com/document/api/228/3937
      * @param int|null $offset
      * @param int|null $limit
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function describeCdnHosts(int $offset = null, int $limit = null)
     {
@@ -210,7 +210,7 @@ class API extends AbstractAPI
      * @param array $projects
      * @param array|null $hosts
      * @param int|null $period
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getCdnStatusCode($startDate, $endDate, array $projects, array $hosts = null, int $period = null)
     {
@@ -231,7 +231,7 @@ class API extends AbstractAPI
      * @param array $projects
      * @param array|null $hosts
      * @param int|null $period
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function GetCdnStatTop(
         $startDate,
@@ -258,7 +258,7 @@ class API extends AbstractAPI
      * @param string $statType
      * @param array $projects
      * @param array|null $hosts
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function describeCdnHostInfo($startDate, $endDate, string $statType, array $projects, array $hosts = null)
     {
@@ -278,7 +278,7 @@ class API extends AbstractAPI
      * @param string $statType
      * @param array $projects
      * @param array|null $hosts
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function describeCdnHostDetailedInfo($startDate, $endDate, string $statType, array $projects, array $hosts = null)
     {
@@ -294,7 +294,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/3948
      * @param array $conditions
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getCdnRefreshLog(array $conditions)
     {
@@ -331,7 +331,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/3946
      * @param string|array $urls
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function refreshCdnUrl($urls)
     {
@@ -341,7 +341,7 @@ class API extends AbstractAPI
     /**
      * @link https://www.qcloud.com/document/api/228/3947
      * @param string|array $dirs
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function refreshCdnDir($dirs)
     {
@@ -356,7 +356,7 @@ class API extends AbstractAPI
      * @param string $host
      * @param string|int|\DateTimeInterface|null $startDate
      * @param string|int|\DateTimeInterface|null $endDate
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getCdnLogList(string $host, $startDate = null, $endDate = null)
     {

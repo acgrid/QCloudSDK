@@ -58,7 +58,7 @@ class Voice extends API
      * @param string $nationCode
      * @param string $mobile
      * @param string $verifyCode
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function sendVerifyCode(string $nationCode, string $mobile, string $verifyCode)
     {
@@ -72,7 +72,7 @@ class Voice extends API
      * @param string $mobile
      * @param string $promptfile
      * @param int $prompttype
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function sendPrompt(string $nationCode, string $mobile, string $promptfile, int $prompttype = 2)
     {

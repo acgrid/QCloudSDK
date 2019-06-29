@@ -33,7 +33,7 @@ class ServiceAPI extends API
     protected function request(string $method, string $endpoint, string $paramOption)
     {
         $this->addParams(['appid' => $this->appId]);
-        $this->headers->set('Authorization', $this->signMultiEffect());
+        $this->headers->offsetSet('Authorization', $this->signMultiEffect());
         return $this->parseJSON('request', $this->apiUrl . $endpoint, $method, [$paramOption => $this->params, 'headers' => $this->headers->all(), 'timeout' => 60]);
     }
 

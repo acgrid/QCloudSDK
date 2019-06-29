@@ -16,7 +16,7 @@ class Signature extends ServiceAPI
      * @link https://www.qcloud.com/document/product/382/6038
      * @param string $text
      * @param string $remark
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function add(string $text, string $remark)
     {
@@ -29,7 +29,7 @@ class Signature extends ServiceAPI
      * @param int $sign_id
      * @param string $text
      * @param string $remark
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function mod(int $sign_id, string $text, string $remark)
     {
@@ -45,7 +45,7 @@ class Signature extends ServiceAPI
     /**
      * @link https://www.qcloud.com/document/product/382/6039
      * @param array|int $idList
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function delete($idList)
     {
@@ -56,7 +56,7 @@ class Signature extends ServiceAPI
     /**
      * @link https://www.qcloud.com/document/product/382/6040
      * @param array|int $idList
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function get($idList)
     {

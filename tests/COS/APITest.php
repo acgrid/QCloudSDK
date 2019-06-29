@@ -3,8 +3,8 @@
 namespace QCloudSDKTests\COS;
 
 use QCloudSDK\COS\API;
-use QCloudSDK\Utils\Collection;
 use QCloudSDKTests\TestCase;
+use Tightenco\Collect\Support\Collection;
 
 class APITest extends TestCase
 {

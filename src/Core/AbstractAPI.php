@@ -6,11 +6,12 @@ namespace QCloudSDK\Core;
 
 use QCloudSDK\Core\Exceptions\ClientException;
 use QCloudSDK\Facade\Config;
-use QCloudSDK\Utils\Collection;
 use QCloudSDK\Utils\Log;
 use GuzzleHttp\Middleware;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Tightenco\Collect\Support\Arr;
+use Tightenco\Collect\Support\Collection;
 
 abstract class AbstractAPI
 {
@@ -62,7 +63,7 @@ abstract class AbstractAPI
 
     protected function getLocalConfig($key, $default = null)
     {
-        return $this->config->get(static::CONFIG_SECTION . ".$key", $this->config->get($key, $default));
+        return Arr::get($this->config, static::CONFIG_SECTION . ".$key", Arr::get($this->config, $key, $default));
     }
 
     /**
@@ -99,6 +100,7 @@ abstract class AbstractAPI
      * @param array  $args
      *
      * @return Collection
+     * @throws
      */
     public function parseJSON($method, ...$args)
     {
@@ -223,7 +225,7 @@ abstract class AbstractAPI
      */
     protected function expectResult(string $key, Collection $data, $failureMsg = 'Remote API do not return expected data.')
     {
-        if(null === ($expected = $data->get($key))) throw new \LogicException($failureMsg);
+        if(null === ($expected = Arr::get($data, $key))) throw new \LogicException($failureMsg);
         return new Collection($expected);
     }
 

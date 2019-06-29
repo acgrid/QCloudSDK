@@ -155,7 +155,7 @@ class Processor extends API
     protected function authorization()
     {
         if($this->private){
-            $this->headers->set('Authorization', $this->signMultiEffect($this->private, $this->path));
+            $this->headers->offsetSet('Authorization', $this->signMultiEffect($this->private, $this->path));
         }else{
             $this->headers->forget('Authorization');
         }
@@ -182,7 +182,7 @@ class Processor extends API
 
     /**
      * @link https://cloud.tencent.com/document/product/460/6926
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function exif()
     {
@@ -191,7 +191,7 @@ class Processor extends API
 
     /**
      * @link https://cloud.tencent.com/document/product/460/6927
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function info()
     {
@@ -200,7 +200,7 @@ class Processor extends API
 
     /**
      * @link https://cloud.tencent.com/document/product/460/6928
-     * @return \QCloudSDK\Utils\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function ave()
     {
