@@ -166,7 +166,7 @@ class Processor extends API
     public function download()
     {
         try{
-            return $this->authorization()->getHttp()->request($this->absoluteUrl(false), 'GET', ['headers' => $this->headers->all(), 'timeout' => 0]);
+            return $this->authorization()->getHttp()->request($this->absoluteUrl(), 'GET', ['headers' => $this->headers->all(), 'timeout' => 0]);
         }finally{
             $this->reset();
         }
@@ -175,7 +175,7 @@ class Processor extends API
     protected function getJsonRequest()
     {
         try{
-            return $this->authorization()->parseJSON('request', $this->absoluteUrl(false), 'GET', ['headers' => $this->headers->all()]);
+            return $this->authorization()->parseJSON('request', $this->absoluteUrl(), 'GET', ['headers' => $this->headers->all()]);
         }finally{
             $this->reset();
         }

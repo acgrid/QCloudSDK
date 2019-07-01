@@ -6,7 +6,6 @@ use GuzzleHttp\Psr7\Uri;
 use QCloudSDK\Core\Exceptions\InvalidArgumentException;
 use QCloudSDK\Image\ProcessingChain;
 use QCloudSDK\Image\Processor;
-use QCloudSDKTests\TestCase;
 
 class ProcessorTest extends ImageTestCase
 {
@@ -28,7 +27,7 @@ class ProcessorTest extends ImageTestCase
             $this->assertSame('http', $uri->getScheme());
             $this->assertSame('tencentyun-1252821871.picgz.myqcloud.com', $uri->getHost());
             $this->assertSame('/abc/foo.jpg!face', $uri->getPath());
-            $this->assertSame('exif', $uri->getQuery());
+            $this->assertStringContainsString('exif', $uri->getQuery());
         });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
@@ -40,7 +39,7 @@ class ProcessorTest extends ImageTestCase
         $this->api->public()->file('foo/bar.png')->ave();
         $this->assertMyRequestUri(function(Uri $uri){
             $this->assertSame('/foo/bar.png', $uri->getPath());
-            $this->assertSame('imageAve', $uri->getQuery());
+            $this->assertStringContainsString('imageAve', $uri->getQuery());
         });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayNotHasKey('Authorization', $headers);
@@ -56,7 +55,8 @@ class ProcessorTest extends ImageTestCase
             $this->assertSame('http', $uri->getScheme());
             $this->assertSame('tencentyun-1252821871.image.myqcloud.com', $uri->getHost());
             $this->assertSame('/abc/xyz.jpg-thumbnail', $uri->getPath());
-            $this->assertSame('imageInfo', $uri->getQuery());
+            $this->assertStringContainsString('imageInfo', $uri->getQuery());
+            $this->assertStringContainsString('sign=', $uri->getQuery());
         });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
@@ -70,7 +70,7 @@ class ProcessorTest extends ImageTestCase
             $this->assertSame('http', $uri->getScheme());
             $this->assertSame('portrait-1252821871.picsh.myqcloud.com', $uri->getHost());
             $this->assertSame('/foo.jpg!face', $uri->getPath());
-            $this->assertEmpty($uri->getQuery());
+            $this->assertStringContainsString('sign=', $uri->getQuery());
         });
         $this->assertMyRequestHeaders(function ($headers) {
             $this->assertArrayHasKey('Authorization', $headers);
